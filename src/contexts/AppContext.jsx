@@ -1,33 +1,39 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
-import { INITIAL_STAFF } from '../data/initialData.js'
 import { generateId } from '../utils/calculations.js'
 
 const AppContext = createContext(null)
 
-const LS_STAFF = 'lfa_staff'
-const LS_RECORDS = 'lfa_records'
+const BASE = '/api'
 
-function loadFromStorage(key, fallback) {
-  try {
-    const raw = localStorage.getItem(key)
-    return raw ? JSON.parse(raw) : fallback
-  } catch {
-    return fallback
-  }
+async function api(path, method = 'GET', body) {
+  const res = await fetch(BASE + path, {
+    method,
+    headers: body ? { 'Content-Type': 'application/json' } : {},
+    body: body ? JSON.stringify(body) : undefined,
+  })
+  if (!res.ok) throw new Error(await res.text())
+  return res.json()
 }
 
 export function AppProvider({ children }) {
-  const [staffList, setStaffList] = useState(() => loadFromStorage(LS_STAFF, INITIAL_STAFF))
-  const [records, setRecords] = useState(() => loadFromStorage(LS_RECORDS, []))
-  const [currentUser, setCurrentUser] = useState(null) // { type: 'admin' } or { type: 'staff', id }
+  const [staffList, setStaffList] = useState([])
+  const [records, setRecords] = useState([])
+  const [currentUser, setCurrentUser] = useState(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    localStorage.setItem(LS_STAFF, JSON.stringify(staffList))
-  }, [staffList])
-
-  useEffect(() => {
-    localStorage.setItem(LS_RECORDS, JSON.stringify(records))
-  }, [records])
+    Promise.all([
+      api('/staff'),
+      api('/records'),
+    ]).then(([staff, recs]) => {
+      setStaffList(staff)
+      setRecords(recs)
+      setLoading(false)
+    }).catch(err => {
+      console.error('Load error:', err)
+      setLoading(false)
+    })
+  }, [])
 
   // Auth
   function loginStaff(staffId, pin) {
@@ -43,95 +49,101 @@ export function AppProvider({ children }) {
     return true
   }
 
-  function logout() {
-    setCurrentUser(null)
-  }
+  function logout() { setCurrentUser(null) }
 
   // Attendance
-  function clockIn(staffId) {
+  async function clockIn(staffId) {
     const existing = records.find(r => r.staffId === staffId && !r.clockOut)
     if (existing) return false
-    const newRecord = {
-      id: generateId(),
-      staffId,
-      clockIn: new Date().toISOString(),
-      clockOut: null,
-      transportationFee: 0,
-      transportationRoundTrip: 0,
-      note: '',
-      breakRequest: null,
-    }
-    setRecords(prev => [...prev, newRecord])
+    const rec = await api('/records', 'POST', { staffId, clockIn: new Date().toISOString() })
+    setRecords(prev => [...prev, rec])
     return true
   }
 
-  function clockOut(staffId) {
+  async function clockOut(staffId) {
     const record = records.find(r => r.staffId === staffId && !r.clockOut)
     if (!record) return false
-    setRecords(prev => prev.map(r =>
-      r.id === record.id ? { ...r, clockOut: new Date().toISOString() } : r
-    ))
+    const updated = await api(`/records/${record.id}`, 'PUT', { clockOut: new Date().toISOString() })
+    setRecords(prev => prev.map(r => r.id === record.id ? updated : r))
     return true
   }
 
-  function updateRecord(recordId, updates) {
-    setRecords(prev => prev.map(r => r.id === recordId ? { ...r, ...updates } : r))
+  async function updateRecord(recordId, updates) {
+    const record = records.find(r => r.id === recordId)
+    if (!record) return
+    const merged = { ...record, ...updates }
+    const updated = await api(`/records/${recordId}`, 'PUT', merged)
+    setRecords(prev => prev.map(r => r.id === recordId ? updated : r))
   }
 
-  function deleteRecord(recordId) {
+  async function deleteRecord(recordId) {
+    await api(`/records/${recordId}`, 'DELETE')
     setRecords(prev => prev.filter(r => r.id !== recordId))
   }
 
   // Break requests
-  function submitBreakRequest(recordId, requestedBreakMinutes, reason) {
-    setRecords(prev => prev.map(r =>
-      r.id === recordId ? {
-        ...r,
-        breakRequest: {
-          requestedBreakMinutes,
-          reason,
-          status: 'pending',
-          adminComment: null,
-          requestedAt: new Date().toISOString(),
-        }
-      } : r
-    ))
+  async function submitBreakRequest(recordId, requestedBreakMinutes, reason) {
+    const record = records.find(r => r.id === recordId)
+    const updated = await api(`/records/${recordId}`, 'PUT', {
+      ...record,
+      breakRequest: {
+        requestedBreakMinutes,
+        reason,
+        status: 'pending',
+        adminComment: null,
+        requestedAt: new Date().toISOString(),
+      }
+    })
+    setRecords(prev => prev.map(r => r.id === recordId ? updated : r))
   }
 
-  function approveBreakRequest(recordId) {
-    setRecords(prev => prev.map(r =>
-      r.id === recordId ? {
-        ...r,
-        breakRequest: { ...r.breakRequest, status: 'approved', adminComment: null }
-      } : r
-    ))
+  async function approveBreakRequest(recordId) {
+    const record = records.find(r => r.id === recordId)
+    const updated = await api(`/records/${recordId}`, 'PUT', {
+      ...record,
+      breakRequest: { ...record.breakRequest, status: 'approved', adminComment: null }
+    })
+    setRecords(prev => prev.map(r => r.id === recordId ? updated : r))
   }
 
-  function rejectBreakRequest(recordId, comment) {
-    setRecords(prev => prev.map(r =>
-      r.id === recordId ? {
-        ...r,
-        breakRequest: { ...r.breakRequest, status: 'rejected', adminComment: comment }
-      } : r
-    ))
+  async function rejectBreakRequest(recordId, comment) {
+    const record = records.find(r => r.id === recordId)
+    const updated = await api(`/records/${recordId}`, 'PUT', {
+      ...record,
+      breakRequest: { ...record.breakRequest, status: 'rejected', adminComment: comment }
+    })
+    setRecords(prev => prev.map(r => r.id === recordId ? updated : r))
   }
 
   // Staff management
-  function updateStaff(staffId, updates) {
-    setStaffList(prev => prev.map(s => s.id === staffId ? { ...s, ...updates } : s))
+  async function updateStaff(staffId, updates) {
+    const staff = staffList.find(s => s.id === staffId)
+    const updated = await api(`/staff/${staffId}`, 'PUT', { ...staff, ...updates })
+    setStaffList(prev => prev.map(s => s.id === staffId ? updated : s))
   }
 
-  function addStaff(staffData) {
+  async function addStaff(staffData) {
     const newStaff = {
       id: 'staff' + String(staffList.length + 1).padStart(3, '0'),
       ...staffData,
     }
-    setStaffList(prev => [...prev, newStaff])
+    const created = await api('/staff', 'POST', newStaff)
+    setStaffList(prev => [...prev, created])
   }
 
   const getStaff = (id) => staffList.find(s => s.id === id)
   const getStaffRecords = (staffId) => records.filter(r => r.staffId === staffId)
   const getActiveRecord = (staffId) => records.find(r => r.staffId === staffId && !r.clockOut)
+
+  if (loading) {
+    return (
+      <div style={{ display:'flex', alignItems:'center', justifyContent:'center',
+        height:'100vh', background:'#1a2744', color:'white', fontSize:18, flexDirection:'column', gap:16 }}>
+        <div style={{ fontSize:40 }}>⚖</div>
+        <div>Themis 読み込み中...</div>
+      </div>
+    )
+  }
 
   return (
     <AppContext.Provider value={{
