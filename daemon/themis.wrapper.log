@@ -1,0 +1,2 @@
+2026-06-08 14:13:52 - Starting C:\Program Files\nodejs\node.exe  C:\Users\nakay\law-firm-attendance\node_modules\node-windows\lib\wrapper.js --file C:\Users\nakay\law-firm-attendance\server.cjs --scriptoptions= --log "Themis勤怠管理 wrapper" --grow 0.5 --wait 2 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2026-06-08 14:13:52 - Started 10404

@@ -1,0 +1,30 @@
+<service>
+	<id>themis.exe</id>
+	<name>Themis勤怠管理</name>
+	<description>日本橋法律特許事務所 勤怠管理システム</description>
+	<executable>C:\Program Files\nodejs\node.exe</executable>
+	<argument>C:\Users\nakay\law-firm-attendance\node_modules\node-windows\lib\wrapper.js</argument>
+	<argument>--file</argument>
+	<argument>C:\Users\nakay\law-firm-attendance\server.cjs</argument>
+	<argument>--scriptoptions=</argument>
+	<argument>--log</argument>
+	<argument>Themis勤怠管理 wrapper</argument>
+	<argument>--grow</argument>
+	<argument>0.5</argument>
+	<argument>--wait</argument>
+	<argument>2</argument>
+	<argument>--maxrestarts</argument>
+	<argument>3</argument>
+	<argument>--abortonerror</argument>
+	<argument>n</argument>
+	<argument>--stopparentfirst</argument>
+	<argument>undefined</argument>
+	<logmode>rotate</logmode>
+	<stoptimeout>30sec</stoptimeout>
+	<serviceaccount>
+		<domain>YASUBEI</domain>
+		<user>LocalSystem</user>
+		<password></password>
+	</serviceaccount>
+	<workingdirectory>C:\Users\nakay\law-firm-attendance</workingdirectory>
+</service>
