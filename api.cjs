@@ -181,7 +181,7 @@ app.delete('/api/records/:id', async (req, res) => {
 // ============ 静的ファイル配信 ============
 const distPath = path.join(__dirname, 'dist')
 app.use(express.static(distPath))
-app.get('*', (req, res) => {
+app.get(/.*/, (req, res) => {
   res.sendFile(path.join(distPath, 'index.html'))
 })
 
