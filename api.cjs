@@ -53,11 +53,6 @@ async function initDB() {
         ['staff003','スタッフ003','1003',1500,'parttime'],
         ['staff004','スタッフ004','1004',1300,'contract'],
         ['staff005','スタッフ005','1005',1400,'parttime'],
-        ['staff006','スタッフ006','1006',1500,'contract'],
-        ['staff007','スタッフ007','1007',1300,'parttime'],
-        ['staff008','スタッフ008','1008',1400,'contract'],
-        ['staff009','スタッフ009','1009',1500,'parttime'],
-        ['staff010','スタッフ010','1010',1300,'contract'],
       ]
       for (const s of initial) {
         await client.query(
@@ -121,6 +116,11 @@ app.put('/api/staff/:id', async (req, res) => {
     [name, pin, hourlyRate, employmentType, req.params.id]
   )
   res.json({ id: req.params.id, name, pin, hourlyRate, employmentType })
+})
+
+app.delete('/api/staff/:id', async (req, res) => {
+  await pool.query('DELETE FROM staff WHERE id=$1', [req.params.id])
+  res.json({ ok: true })
 })
 
 // ============ API: 勤怠記録 ============

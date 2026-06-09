@@ -141,13 +141,24 @@ export function AppProvider({ children }) {
   }
 
   async function addStaff(staffData) {
-    const newStaff = { id: 'staff' + String(staffList.length + 1).padStart(3, '0'), ...staffData }
+    // 既存IDの最大番号+1でID生成（削除後も重複しない）
+    const maxNum = staffList.reduce((max, s) => {
+      const n = parseInt(s.id.replace(/\D/g, '')) || 0
+      return n > max ? n : max
+    }, 0)
+    const newStaff = { id: 'staff' + String(maxNum + 1).padStart(3, '0'), ...staffData }
     if (USE_API) {
       const created = await api('/staff', 'POST', newStaff)
       setStaffList(prev => [...prev, created])
     } else {
       setStaffList(prev => [...prev, newStaff])
     }
+  }
+
+  async function deleteStaff(staffId) {
+    if (!window.confirm('このスタッフを削除しますか？\n（関連する勤怠記録は残ります）')) return
+    if (USE_API) await api(`/staff/${staffId}`, 'DELETE')
+    setStaffList(prev => prev.filter(s => s.id !== staffId))
   }
 
   const getStaff = (id) => staffList.find(s => s.id === id)
@@ -170,7 +181,7 @@ export function AppProvider({ children }) {
       loginStaff, loginAdmin, logout,
       clockIn, clockOut, updateRecord, deleteRecord,
       submitBreakRequest, approveBreakRequest, rejectBreakRequest,
-      updateStaff, addStaff, getStaff, getStaffRecords, getActiveRecord,
+      updateStaff, addStaff, deleteStaff, getStaff, getStaffRecords, getActiveRecord,
     }}>
       {children}
     </AppContext.Provider>

@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useApp } from '../../contexts/AppContext.jsx'
 
 export default function StaffManagement() {
-  const { staffList, updateStaff, addStaff } = useApp()
+  const { staffList, updateStaff, addStaff, deleteStaff } = useApp()
   const [editingId, setEditingId] = useState(null)
   const [editData, setEditData] = useState({})
   const [showAdd, setShowAdd] = useState(false)
@@ -113,7 +113,10 @@ export default function StaffManagement() {
                   <td className="pin-cell">{'●'.repeat(4)}</td>
                   <td><strong>{staff.hourlyRate.toLocaleString()}円</strong></td>
                   <td><span className={`emp-badge ${staff.employmentType}`}>{staff.employmentType === 'parttime' ? 'アルバイト' : '業務委託'}</span></td>
-                  <td><button className="btn btn-sm btn-secondary" onClick={() => startEdit(staff)}>編集</button></td>
+                  <td>
+                    <button className="btn btn-sm btn-secondary" onClick={() => startEdit(staff)}>編集</button>
+                    <button className="btn btn-sm btn-danger" onClick={() => deleteStaff(staff.id)} style={{marginLeft:6}}>削除</button>
+                  </td>
                 </>
               )}
             </tr>
