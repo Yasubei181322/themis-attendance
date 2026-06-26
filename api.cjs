@@ -2,6 +2,7 @@ const express = require('express')
 const { Pool } = require('pg')
 const path = require('path')
 const cors = require('cors')
+const ExcelJS = require('exceljs')
 
 const app = express()
 const PORT = process.env.PORT || 3737
@@ -186,6 +187,243 @@ app.put('/api/records/:id', async (req, res) => {
 app.delete('/api/records/:id', async (req, res) => {
   await pool.query('DELETE FROM records WHERE id=$1', [req.params.id])
   res.json({ ok: true })
+})
+
+// ============ Excel エクスポート ============
+app.get('/api/export/monthly', async (req, res) => {
+  const year  = parseInt(req.query.year)
+  const month = parseInt(req.query.month)
+  if (!year || !month) return res.status(400).json({ error: 'year/month required' })
+
+  const { rows: staffList } = await pool.query('SELECT * FROM staff ORDER BY id')
+  const startDate = new Date(year, month - 1, 1)
+  const endDate   = new Date(year, month, 1)
+  const { rows: records } = await pool.query(
+    'SELECT * FROM records WHERE clock_in >= $1 AND clock_in < $2',
+    [startDate, endDate]
+  )
+
+  const daysInMonth = new Date(year, month, 0).getDate()
+  const wb = new ExcelJS.Workbook()
+  const ws = wb.addWorksheet(`${year}.${month}`)
+
+  // ===== スタイル定義 =====
+  const headerFill  = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1F3864' } }
+  const subFill     = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFD6E4F0' } }
+  const satFill     = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFDDEBF7' } }
+  const sunFill     = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFCE4EC' } }
+  const totalFill   = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFF2CC' } }
+  const thinBorder  = { style: 'thin', color: { argb: 'FFAAAAAA' } }
+  const border      = { top: thinBorder, left: thinBorder, bottom: thinBorder, right: thinBorder }
+  const centerAlign = { horizontal: 'center', vertical: 'middle' }
+  const rightAlign  = { horizontal: 'right', vertical: 'middle' }
+
+  // ===== 列幅設定 =====
+  ws.getColumn(1).width = 10  // スタッフ名
+  ws.getColumn(2).width = 6   // 区分
+  for (let d = 1; d <= daysInMonth; d++) ws.getColumn(d + 2).width = 7
+  ws.getColumn(daysInMonth + 3).width = 8  // 出勤日数
+  ws.getColumn(daysInMonth + 4).width = 10 // 合計時間
+  ws.getColumn(daysInMonth + 5).width = 8  // 時給
+  ws.getColumn(daysInMonth + 6).width = 10 // 労働報酬
+  ws.getColumn(daysInMonth + 7).width = 8  // 交通費A
+  ws.getColumn(daysInMonth + 8).width = 8  // 交通費B
+  ws.getColumn(daysInMonth + 9).width = 10 // 総計
+  ws.getColumn(daysInMonth + 10).width = 12 // 備考
+
+  // ===== タイトル行 =====
+  ws.mergeCells(1, 1, 1, daysInMonth + 10)
+  const titleCell = ws.getCell(1, 1)
+  titleCell.value = `日本橋法律特許事務所　勤務実績表（${year}年${month}月）`
+  titleCell.font = { bold: true, size: 13, color: { argb: 'FFFFFFFF' } }
+  titleCell.fill = headerFill
+  titleCell.alignment = { horizontal: 'center', vertical: 'middle' }
+  ws.getRow(1).height = 22
+
+  // ===== 日付ヘッダー行 =====
+  const dateRow = ws.getRow(2)
+  dateRow.getCell(1).value = '氏名'
+  dateRow.getCell(2).value = '区分'
+  const dayNames = ['日','月','火','水','木','金','土']
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dow = new Date(year, month - 1, d).getDay()
+    const cell = dateRow.getCell(d + 2)
+    cell.value = d
+    cell.alignment = centerAlign
+    cell.font = { bold: true, size: 9, color: { argb: dow === 0 ? 'FFB71C1C' : dow === 6 ? 'FF1565C0' : 'FF000000' } }
+    if (dow === 6) cell.fill = satFill
+    if (dow === 0) cell.fill = sunFill
+    cell.border = border
+  }
+  dateRow.getCell(daysInMonth + 3).value = '出勤\n日数'
+  dateRow.getCell(daysInMonth + 4).value = '合計\n勤務時間'
+  dateRow.getCell(daysInMonth + 5).value = '時給\n(円)'
+  dateRow.getCell(daysInMonth + 6).value = '労働\n報酬'
+  dateRow.getCell(daysInMonth + 7).value = '交通費A\n(片道)'
+  dateRow.getCell(daysInMonth + 8).value = '交通費B\n(往復)'
+  dateRow.getCell(daysInMonth + 9).value = '総計\n(A+B+報酬)'
+  dateRow.getCell(daysInMonth + 10).value = '備考'
+  dateRow.height = 28
+  for (let c = 1; c <= daysInMonth + 10; c++) {
+    const cell = dateRow.getCell(c)
+    if (!cell.fill || !cell.fill.fgColor) cell.fill = subFill
+    cell.font = { ...(cell.font || {}), bold: true, size: 9 }
+    cell.alignment = { ...centerAlign, wrapText: true }
+    cell.border = border
+  }
+
+  // ===== 曜日行 =====
+  const dowRow = ws.getRow(3)
+  dowRow.getCell(1).value = ''; dowRow.getCell(2).value = ''
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dow = new Date(year, month - 1, d).getDay()
+    const cell = dowRow.getCell(d + 2)
+    cell.value = dayNames[dow]
+    cell.alignment = centerAlign
+    cell.font = { size: 9, color: { argb: dow === 0 ? 'FFB71C1C' : dow === 6 ? 'FF1565C0' : 'FF000000' } }
+    if (dow === 6) cell.fill = satFill
+    if (dow === 0) cell.fill = sunFill
+    cell.border = border
+  }
+  dowRow.height = 14
+
+  // ===== スタッフ行 =====
+  let currentRow = 4
+  for (const staff of staffList) {
+    const staffRecords = records.filter(r => r.staff_id === staff.id)
+    const recordByDay = {}
+    for (const r of staffRecords) {
+      const d = new Date(r.clock_in).getDate()
+      recordByDay[d] = r
+    }
+
+    const rowLabels = ['出勤', '退勤', '休憩', '深夜']
+    const rowData   = [[], [], [], []]
+
+    let workDays = 0, totalWorkMins = 0, totalTransA = 0, totalTransB = 0
+
+    for (let d = 1; d <= daysInMonth; d++) {
+      const r = recordByDay[d]
+      if (r) {
+        workDays++
+        const clockIn  = r.clock_in  ? new Date(r.clock_in)  : null
+        const clockOut = r.clock_out ? new Date(r.clock_out) : null
+
+        rowData[0][d] = clockIn  ? `${String(clockIn.getHours()).padStart(2,'0')}:${String(clockIn.getMinutes()).padStart(2,'0')}` : ''
+        rowData[1][d] = clockOut ? `${String(clockOut.getHours()).padStart(2,'0')}:${String(clockOut.getMinutes()).padStart(2,'0')}` : '出勤中'
+
+        // 休憩
+        let breakMins = 0
+        if (r.break_start && r.break_end) {
+          breakMins = Math.round((new Date(r.break_end) - new Date(r.break_start)) / 60000)
+        } else if (r.break_req_status === 'approved') {
+          breakMins = r.break_req_minutes || 0
+        } else if (clockIn && clockOut) {
+          const grossMins = (clockOut - clockIn) / 60000
+          breakMins = grossMins > 480 ? 60 : grossMins > 360 ? 45 : 0
+        }
+        rowData[2][d] = breakMins > 0 ? `${Math.floor(breakMins/60)}:${String(breakMins%60).padStart(2,'0')}` : ''
+
+        // 深夜（22:00〜05:00）
+        let lateNightMins = 0
+        if (clockIn && clockOut) {
+          const s = new Date(clockIn), e = new Date(clockOut)
+          let cur = new Date(s)
+          while (cur < e) {
+            const h = cur.getHours()
+            const isLate = h >= 22 || h < 5
+            let next = new Date(cur)
+            if (h >= 22) { next.setDate(next.getDate()+1); next.setHours(0,0,0,0) }
+            else if (h < 5) { next.setHours(5,0,0,0) }
+            else { next.setHours(22,0,0,0) }
+            if (next > e) next = new Date(e)
+            if (isLate) lateNightMins += (next - cur) / 60000
+            cur = next
+          }
+        }
+        rowData[3][d] = lateNightMins > 0 ? `${Math.floor(lateNightMins/60)}:${String(Math.round(lateNightMins%60)).padStart(2,'0')}` : ''
+
+        if (clockIn && clockOut) {
+          const grossMins = (clockOut - clockIn) / 60000
+          totalWorkMins += Math.max(0, grossMins - breakMins)
+        }
+        totalTransA += r.transportation_fee || 0
+        totalTransB += r.transportation_round_trip || 0
+      } else {
+        rowData[0][d] = ''; rowData[1][d] = ''; rowData[2][d] = ''; rowData[3][d] = ''
+      }
+    }
+
+    const hourlyRate = staff.hourly_rate
+    const laborPay   = Math.round(hourlyRate * totalWorkMins / 60)
+    const totalPay   = laborPay + totalTransA + totalTransB
+    const workHStr   = `${Math.floor(totalWorkMins/60)}:${String(Math.round(totalWorkMins%60)).padStart(2,'0')}`
+
+    // スタッフ名を最初の行だけ表示（4行結合）
+    ws.mergeCells(currentRow, 1, currentRow + 3, 1)
+    const nameCell = ws.getCell(currentRow, 1)
+    nameCell.value = staff.name
+    nameCell.alignment = { ...centerAlign, wrapText: true }
+    nameCell.font = { bold: true, size: 9 }
+    nameCell.border = border
+
+    // 集計列を最初の行のみ（4行結合）
+    const summaryRow = currentRow
+    const mergeAndSet = (col, val, fmt) => {
+      ws.mergeCells(summaryRow, col, summaryRow + 3, col)
+      const c = ws.getCell(summaryRow, col)
+      c.value = val
+      c.alignment = { ...centerAlign, wrapText: true }
+      c.font = { size: 9 }
+      c.fill = totalFill
+      c.border = border
+      if (fmt) c.numFmt = fmt
+    }
+    mergeAndSet(daysInMonth + 3, workDays)
+    mergeAndSet(daysInMonth + 4, workHStr)
+    mergeAndSet(daysInMonth + 5, hourlyRate, '#,##0')
+    mergeAndSet(daysInMonth + 6, laborPay, '#,##0')
+    mergeAndSet(daysInMonth + 7, totalTransA, '#,##0')
+    mergeAndSet(daysInMonth + 8, totalTransB, '#,##0')
+    mergeAndSet(daysInMonth + 9, totalPay, '#,##0')
+    mergeAndSet(daysInMonth + 10, staff.employment_type === 'contract' ? '業務委託' : 'アルバイト')
+
+    // 4行（出勤・退勤・休憩・深夜）
+    for (let li = 0; li < 4; li++) {
+      const row = ws.getRow(currentRow + li)
+      row.height = 16
+      row.getCell(2).value = rowLabels[li]
+      row.getCell(2).alignment = centerAlign
+      row.getCell(2).font = { size: 8 }
+      row.getCell(2).fill = subFill
+      row.getCell(2).border = border
+
+      for (let d = 1; d <= daysInMonth; d++) {
+        const dow = new Date(year, month - 1, d).getDay()
+        const cell = row.getCell(d + 2)
+        cell.value = rowData[li][d] || ''
+        cell.alignment = centerAlign
+        cell.font = { size: 8 }
+        cell.border = border
+        if (dow === 6) cell.fill = satFill
+        else if (dow === 0) cell.fill = sunFill
+      }
+    }
+
+    // スタッフ間の区切り線
+    for (let c = 1; c <= daysInMonth + 10; c++) {
+      const cell = ws.getCell(currentRow + 3, c)
+      cell.border = { ...cell.border, bottom: { style: 'medium', color: { argb: 'FF888888' } } }
+    }
+
+    currentRow += 4
+  }
+
+  // ===== レスポンス =====
+  res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+  res.setHeader('Content-Disposition', `attachment; filename*=UTF-8''${encodeURIComponent(`勤務実績表_${year}年${month}月.xlsx`)}`)
+  await wb.xlsx.write(res)
+  res.end()
 })
 
 // ============ 静的ファイル配信 ============
