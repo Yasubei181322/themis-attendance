@@ -449,6 +449,56 @@ app.get('/api/export/monthly', async (req, res) => {
     ws.getRow(totR).height = 18
   }
 
+  // ===== 支払明細シート（スタッフ別） =====
+  for (const s of staffSummaries) {
+    const ws = wb.addWorksheet(`支払明細_${s.staff.name.replace(/[\[\]*?:/\\]/g, '')}`)
+    const laborP = Math.round(s.staff.hourly_rate * s.workMins / 60)
+    const total  = laborP + s.transA + s.transB
+
+    // 列幅
+    ws.getColumn(1).width = 18
+    ws.getColumn(2).width = 18
+
+    // タイトル
+    ws.mergeCells(1, 1, 1, 2)
+    setCell(ws, 1, 1, `${s.staff.name}様　${year}年${month}月分　労働報酬`, {
+      fill: navy, font: { bold: true, size: 13, color: { argb: 'FFFFFFFF' } }, align: C
+    })
+    ws.getRow(1).height = 28
+
+    // 空行
+    ws.getRow(2).height = 8
+
+    // 明細行
+    const rows = [
+      ['出勤日数',   `${s.workDays}日`],
+      ['勤務時間',   toHHMM(s.workMins)],
+      ['時給',       s.staff.hourly_rate],
+      ['労働報酬',   laborP],
+      ['交通費（片道）', s.transA],
+      ['交通費（往復）', s.transB],
+      ['お支払合計', total],
+    ]
+
+    rows.forEach(([label, val], i) => {
+      const row   = i + 3
+      const isTotal = label === 'お支払合計'
+      const bg    = isTotal ? gold : i % 2 === 0 ? 'FFFFFFFF' : gray
+      const font  = { bold: isTotal, size: isTotal ? 12 : 11 }
+      setCell(ws, row, 1, label, { fill: blue, font: { ...font, bold: true }, align: L })
+      setCell(ws, row, 2, val,   {
+        fill: bg, font, align: R,
+        numFmt: typeof val === 'number' ? '#,##0' : undefined
+      })
+      ws.getRow(row).height = isTotal ? 24 : 20
+    })
+
+    // 区切り線（合計行の上）
+    const totRow = rows.length + 2
+    ws.getCell(totRow, 1).border = { ...bdr, top: med }
+    ws.getCell(totRow, 2).border = { ...bdr, top: med }
+  }
+
   // ===== レスポンス =====
   res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
   res.setHeader('Content-Disposition', `attachment; filename*=UTF-8''${encodeURIComponent(`勤務実績表_${year}年${month}月.xlsx`)}`)
