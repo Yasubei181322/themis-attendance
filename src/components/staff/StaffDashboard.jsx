@@ -65,7 +65,7 @@ function BreakRequestForm({ record, onSubmit }) {
 }
 
 export default function StaffDashboard() {
-  const { currentUser, staffList, logout, clockIn, clockOut, updateRecord, submitBreakRequest, getActiveRecord, getStaffRecords } = useApp()
+  const { currentUser, staffList, logout, clockIn, clockOut, updateRecord, submitBreakRequest, startBreak, endBreak, getActiveRecord, getStaffRecords } = useApp()
   const [now, setNow] = useState(new Date())
   const [selectedMonth, setSelectedMonth] = useState(() => {
     const d = new Date()
@@ -129,12 +129,27 @@ export default function StaffDashboard() {
           <div className="clock-status">
             {activeRecord ? (
               <>
-                <div className="status-clocked-in">
-                  <span className="status-dot active" />
-                  出勤中 &nbsp;
-                  <span className="clock-since">{formatTime(activeRecord.clockIn)} より</span>
+                {activeRecord.breakStart && !activeRecord.breakEnd ? (
+                  <div className="status-clocked-in">
+                    <span className="status-dot break" />
+                    休憩中 &nbsp;
+                    <span className="clock-since">{formatTime(activeRecord.breakStart)} より</span>
+                  </div>
+                ) : (
+                  <div className="status-clocked-in">
+                    <span className="status-dot active" />
+                    出勤中 &nbsp;
+                    <span className="clock-since">{formatTime(activeRecord.clockIn)} より</span>
+                  </div>
+                )}
+                <div className="clock-buttons">
+                  {activeRecord.breakStart && !activeRecord.breakEnd ? (
+                    <button className="btn btn-clock btn-breakend" onClick={() => endBreak(staff.id)}>休憩終了</button>
+                  ) : !activeRecord.breakStart ? (
+                    <button className="btn btn-clock btn-breakstart" onClick={() => startBreak(staff.id)}>休憩開始</button>
+                  ) : null}
+                  <button className="btn btn-clock btn-clockout" onClick={handleClockOut}>退 勤</button>
                 </div>
-                <button className="btn btn-clock btn-clockout" onClick={handleClockOut}>退 勤</button>
               </>
             ) : (
               <>
@@ -195,7 +210,14 @@ export default function StaffDashboard() {
                           <td>{formatDate(r.clockIn)}</td>
                           <td>{formatTime(r.clockIn)}</td>
                           <td>{r.clockOut ? formatTime(r.clockOut) : <span className="in-progress">出勤中</span>}</td>
-                          <td>{r.clockOut ? `${breakMins}分` : '-'}</td>
+                          <td>
+                            {r.clockOut ? `${breakMins}分` : '-'}
+                            {r.breakStart && r.breakEnd && (
+                              <div style={{fontSize:'0.75em',color:'#666'}}>
+                                {formatTime(r.breakStart)}〜{formatTime(r.breakEnd)}
+                              </div>
+                            )}
+                          </td>
                           <td>{r.clockOut ? formatMinutes(workMins) : '-'}</td>
                           <td>
                             <input

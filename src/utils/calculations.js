@@ -5,10 +5,14 @@ export function getAutoBreakMinutes(grossWorkMinutes) {
   return 0
 }
 
-// Effective break minutes (approved request takes precedence)
+// Effective break minutes: 実打刻 > 承認済申請 > 自動控除の順で優先
 export function getEffectiveBreakMinutes(record) {
   if (!record.clockOut) return 0
   const grossMins = (new Date(record.clockOut) - new Date(record.clockIn)) / 60000
+  // 実際の休憩打刻がある場合はそれを使う
+  if (record.breakStart && record.breakEnd) {
+    return Math.round((new Date(record.breakEnd) - new Date(record.breakStart)) / 60000)
+  }
   if (record.breakRequest?.status === 'approved') {
     return record.breakRequest.requestedBreakMinutes
   }

@@ -258,6 +258,22 @@ button { cursor: pointer; }
 }
 .btn-clockout:hover { background: #a93226; transform: translateY(-1px); }
 
+.btn-breakstart {
+  background: #e67e22;
+  color: var(--white);
+}
+.btn-breakstart:hover { background: #ca6f1e; transform: translateY(-1px); }
+
+.btn-breakend {
+  background: #27ae60;
+  color: var(--white);
+}
+.btn-breakend:hover { background: #1e8449; transform: translateY(-1px); }
+
+.clock-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+.status-dot.break { background: #e67e22; }
+
 /* ===== Header ===== */
 .dashboard-header {
   background: var(--navy);

@@ -41,9 +41,13 @@ async function initDB() {
         break_req_reason TEXT,
         break_req_status TEXT,
         break_req_comment TEXT,
-        break_req_at TIMESTAMPTZ
+        break_req_at TIMESTAMPTZ,
+        break_start TIMESTAMPTZ,
+        break_end TIMESTAMPTZ
       )
     `)
+    await client.query('ALTER TABLE records ADD COLUMN IF NOT EXISTS break_start TIMESTAMPTZ')
+    await client.query('ALTER TABLE records ADD COLUMN IF NOT EXISTS break_end TIMESTAMPTZ')
     // 初期スタッフ登録
     const { rows } = await client.query('SELECT COUNT(*) FROM staff')
     if (parseInt(rows[0].count) === 0) {
@@ -84,6 +88,8 @@ function rowToRecord(r) {
       adminComment: r.break_req_comment,
       requestedAt: r.break_req_at ? r.break_req_at.toISOString() : null,
     } : null,
+    breakStart: r.break_start ? r.break_start.toISOString() : null,
+    breakEnd: r.break_end ? r.break_end.toISOString() : null,
   }
 }
 
@@ -142,7 +148,7 @@ app.post('/api/records', async (req, res) => {
 
 app.put('/api/records/:id', async (req, res) => {
   const { clockIn, clockOut, transportationFee, transportationRoundTrip, note,
-    breakRequest } = req.body
+    breakRequest, breakStart, breakEnd } = req.body
   await pool.query(`
     UPDATE records SET
       clock_in = COALESCE($1, clock_in),
@@ -154,7 +160,9 @@ app.put('/api/records/:id', async (req, res) => {
       break_req_reason = $7,
       break_req_status = $8,
       break_req_comment = $9,
-      break_req_at = $10
+      break_req_at = $10,
+      break_start = COALESCE($12, break_start),
+      break_end = COALESCE($13, break_end)
     WHERE id = $11
   `, [
     clockIn || null,
@@ -168,6 +176,8 @@ app.put('/api/records/:id', async (req, res) => {
     breakRequest?.adminComment ?? null,
     breakRequest?.requestedAt ?? null,
     req.params.id,
+    breakStart || null,
+    breakEnd || null,
   ])
   const { rows } = await pool.query('SELECT * FROM records WHERE id=$1', [req.params.id])
   res.json(rowToRecord(rows[0]))

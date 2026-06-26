@@ -155,6 +155,32 @@ export function AppProvider({ children }) {
     }
   }
 
+  async function startBreak(staffId) {
+    const record = records.find(r => r.staffId === staffId && !r.clockOut)
+    if (!record) return false
+    const now = new Date().toISOString()
+    if (USE_API) {
+      const updated = await api(`/records/${record.id}`, 'PUT', { breakStart: now })
+      setRecords(prev => prev.map(r => r.id === record.id ? updated : r))
+    } else {
+      setRecords(prev => prev.map(r => r.id === record.id ? { ...r, breakStart: now } : r))
+    }
+    return true
+  }
+
+  async function endBreak(staffId) {
+    const record = records.find(r => r.staffId === staffId && !r.clockOut)
+    if (!record || !record.breakStart) return false
+    const now = new Date().toISOString()
+    if (USE_API) {
+      const updated = await api(`/records/${record.id}`, 'PUT', { breakEnd: now })
+      setRecords(prev => prev.map(r => r.id === record.id ? updated : r))
+    } else {
+      setRecords(prev => prev.map(r => r.id === record.id ? { ...r, breakEnd: now } : r))
+    }
+    return true
+  }
+
   async function deleteStaff(staffId) {
     if (!window.confirm('このスタッフを削除しますか？\n（関連する勤怠記録は残ります）')) return
     if (USE_API) await api(`/staff/${staffId}`, 'DELETE')
@@ -181,7 +207,8 @@ export function AppProvider({ children }) {
       loginStaff, loginAdmin, logout,
       clockIn, clockOut, updateRecord, deleteRecord,
       submitBreakRequest, approveBreakRequest, rejectBreakRequest,
-      updateStaff, addStaff, deleteStaff, getStaff, getStaffRecords, getActiveRecord,
+      updateStaff, addStaff, deleteStaff, startBreak, endBreak,
+      getStaff, getStaffRecords, getActiveRecord,
     }}>
       {children}
     </AppContext.Provider>
