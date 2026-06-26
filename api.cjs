@@ -190,233 +190,263 @@ app.delete('/api/records/:id', async (req, res) => {
 })
 
 // ============ Excel エクスポート ============
+function toHHMM(mins) {
+  if (!mins) return ''
+  const h = Math.floor(Math.abs(mins) / 60)
+  const m = Math.round(Math.abs(mins) % 60)
+  return `${h}:${String(m).padStart(2, '0')}`
+}
+
+function calcBreakMins(r) {
+  if (r.break_start && r.break_end) return Math.round((new Date(r.break_end) - new Date(r.break_start)) / 60000)
+  if (r.break_req_status === 'approved') return r.break_req_minutes || 0
+  if (r.clock_in && r.clock_out) {
+    const gross = (new Date(r.clock_out) - new Date(r.clock_in)) / 60000
+    return gross > 480 ? 60 : gross > 360 ? 45 : 0
+  }
+  return 0
+}
+
+function calcLateNightMins(r) {
+  if (!r.clock_in || !r.clock_out) return 0
+  let mins = 0, cur = new Date(r.clock_in)
+  const end = new Date(r.clock_out)
+  while (cur < end) {
+    const h = cur.getHours()
+    const late = h >= 22 || h < 5
+    let next = new Date(cur)
+    if (h >= 22) { next.setDate(next.getDate() + 1); next.setHours(0, 0, 0, 0) }
+    else if (h < 5) next.setHours(5, 0, 0, 0)
+    else next.setHours(22, 0, 0, 0)
+    if (next > end) next = new Date(end)
+    if (late) mins += (next - cur) / 60000
+    cur = next
+  }
+  return mins
+}
+
 app.get('/api/export/monthly', async (req, res) => {
   const year  = parseInt(req.query.year)
   const month = parseInt(req.query.month)
   if (!year || !month) return res.status(400).json({ error: 'year/month required' })
 
   const { rows: staffList } = await pool.query('SELECT * FROM staff ORDER BY id')
-  const startDate = new Date(year, month - 1, 1)
-  const endDate   = new Date(year, month, 1)
-  const { rows: records } = await pool.query(
+  const { rows: records }   = await pool.query(
     'SELECT * FROM records WHERE clock_in >= $1 AND clock_in < $2',
-    [startDate, endDate]
+    [new Date(year, month - 1, 1), new Date(year, month, 1)]
   )
 
   const daysInMonth = new Date(year, month, 0).getDate()
+  const dayNames    = ['日','月','火','水','木','金','土']
   const wb = new ExcelJS.Workbook()
-  const ws = wb.addWorksheet(`${year}.${month}`)
 
-  // ===== スタイル定義 =====
-  const headerFill  = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1F3864' } }
-  const subFill     = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFD6E4F0' } }
-  const satFill     = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFDDEBF7' } }
-  const sunFill     = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFCE4EC' } }
-  const totalFill   = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFF2CC' } }
-  const thinBorder  = { style: 'thin', color: { argb: 'FFAAAAAA' } }
-  const border      = { top: thinBorder, left: thinBorder, bottom: thinBorder, right: thinBorder }
-  const centerAlign = { horizontal: 'center', vertical: 'middle' }
-  const rightAlign  = { horizontal: 'right', vertical: 'middle' }
+  // ===== 共通スタイル =====
+  const navy    = 'FF1F3864'
+  const gold    = 'FFFFF2CC'
+  const blue    = 'FFD6E4F0'
+  const satC    = 'FFDDEBF7'
+  const sunC    = 'FFFCE4EC'
+  const gray    = 'FFF5F5F5'
+  const fill = c => ({ type: 'pattern', pattern: 'solid', fgColor: { argb: c } })
+  const thin = { style: 'thin', color: { argb: 'FFCCCCCC' } }
+  const med  = { style: 'medium', color: { argb: 'FF888888' } }
+  const bdr  = { top: thin, left: thin, bottom: thin, right: thin }
+  const C    = { horizontal: 'center', vertical: 'middle' }
+  const R    = { horizontal: 'right',  vertical: 'middle' }
+  const L    = { horizontal: 'left',   vertical: 'middle' }
 
-  // ===== 列幅設定 =====
-  ws.getColumn(1).width = 10  // スタッフ名
-  ws.getColumn(2).width = 6   // 区分
-  for (let d = 1; d <= daysInMonth; d++) ws.getColumn(d + 2).width = 7
-  ws.getColumn(daysInMonth + 3).width = 8  // 出勤日数
-  ws.getColumn(daysInMonth + 4).width = 10 // 合計時間
-  ws.getColumn(daysInMonth + 5).width = 8  // 時給
-  ws.getColumn(daysInMonth + 6).width = 10 // 労働報酬
-  ws.getColumn(daysInMonth + 7).width = 8  // 交通費A
-  ws.getColumn(daysInMonth + 8).width = 8  // 交通費B
-  ws.getColumn(daysInMonth + 9).width = 10 // 総計
-  ws.getColumn(daysInMonth + 10).width = 12 // 備考
-
-  // ===== タイトル行 =====
-  ws.mergeCells(1, 1, 1, daysInMonth + 10)
-  const titleCell = ws.getCell(1, 1)
-  titleCell.value = `日本橋法律特許事務所　勤務実績表（${year}年${month}月）`
-  titleCell.font = { bold: true, size: 13, color: { argb: 'FFFFFFFF' } }
-  titleCell.fill = headerFill
-  titleCell.alignment = { horizontal: 'center', vertical: 'middle' }
-  ws.getRow(1).height = 22
-
-  // ===== 日付ヘッダー行 =====
-  const dateRow = ws.getRow(2)
-  dateRow.getCell(1).value = '氏名'
-  dateRow.getCell(2).value = '区分'
-  const dayNames = ['日','月','火','水','木','金','土']
-  for (let d = 1; d <= daysInMonth; d++) {
-    const dow = new Date(year, month - 1, d).getDay()
-    const cell = dateRow.getCell(d + 2)
-    cell.value = d
-    cell.alignment = centerAlign
-    cell.font = { bold: true, size: 9, color: { argb: dow === 0 ? 'FFB71C1C' : dow === 6 ? 'FF1565C0' : 'FF000000' } }
-    if (dow === 6) cell.fill = satFill
-    if (dow === 0) cell.fill = sunFill
-    cell.border = border
-  }
-  dateRow.getCell(daysInMonth + 3).value = '出勤\n日数'
-  dateRow.getCell(daysInMonth + 4).value = '合計\n勤務時間'
-  dateRow.getCell(daysInMonth + 5).value = '時給\n(円)'
-  dateRow.getCell(daysInMonth + 6).value = '労働\n報酬'
-  dateRow.getCell(daysInMonth + 7).value = '交通費A\n(片道)'
-  dateRow.getCell(daysInMonth + 8).value = '交通費B\n(往復)'
-  dateRow.getCell(daysInMonth + 9).value = '総計\n(A+B+報酬)'
-  dateRow.getCell(daysInMonth + 10).value = '備考'
-  dateRow.height = 28
-  for (let c = 1; c <= daysInMonth + 10; c++) {
-    const cell = dateRow.getCell(c)
-    if (!cell.fill || !cell.fill.fgColor) cell.fill = subFill
-    cell.font = { ...(cell.font || {}), bold: true, size: 9 }
-    cell.alignment = { ...centerAlign, wrapText: true }
-    cell.border = border
+  const setCell = (ws, row, col, val, opts = {}) => {
+    const c = ws.getCell(row, col)
+    c.value = val
+    if (opts.fill)   c.fill      = fill(opts.fill)
+    if (opts.font)   c.font      = opts.font
+    if (opts.align)  c.alignment = opts.align
+    if (opts.numFmt) c.numFmt    = opts.numFmt
+    if (opts.border !== false) c.border = opts.border || bdr
+    return c
   }
 
-  // ===== 曜日行 =====
-  const dowRow = ws.getRow(3)
-  dowRow.getCell(1).value = ''; dowRow.getCell(2).value = ''
-  for (let d = 1; d <= daysInMonth; d++) {
-    const dow = new Date(year, month - 1, d).getDay()
-    const cell = dowRow.getCell(d + 2)
-    cell.value = dayNames[dow]
-    cell.alignment = centerAlign
-    cell.font = { size: 9, color: { argb: dow === 0 ? 'FFB71C1C' : dow === 6 ? 'FF1565C0' : 'FF000000' } }
-    if (dow === 6) cell.fill = satFill
-    if (dow === 0) cell.fill = sunFill
-    cell.border = border
-  }
-  dowRow.height = 14
-
-  // ===== スタッフ行 =====
-  let currentRow = 4
-  for (const staff of staffList) {
-    const staffRecords = records.filter(r => r.staff_id === staff.id)
-    const recordByDay = {}
-    for (const r of staffRecords) {
+  // ===== スタッフ別集計データを先に計算 =====
+  const staffSummaries = staffList.map(staff => {
+    const recs = records.filter(r => r.staff_id === staff.id)
+    let workDays = 0, workMins = 0, lateNightMins = 0, transA = 0, transB = 0
+    const byDay = {}
+    for (const r of recs) {
       const d = new Date(r.clock_in).getDate()
-      recordByDay[d] = r
-    }
-
-    const rowLabels = ['出勤', '退勤', '休憩', '深夜']
-    const rowData   = [[], [], [], []]
-
-    let workDays = 0, totalWorkMins = 0, totalTransA = 0, totalTransB = 0
-
-    for (let d = 1; d <= daysInMonth; d++) {
-      const r = recordByDay[d]
-      if (r) {
+      byDay[d] = r
+      if (r.clock_out) {
         workDays++
-        const clockIn  = r.clock_in  ? new Date(r.clock_in)  : null
-        const clockOut = r.clock_out ? new Date(r.clock_out) : null
+        const gross = (new Date(r.clock_out) - new Date(r.clock_in)) / 60000
+        workMins += Math.max(0, gross - calcBreakMins(r))
+        lateNightMins += calcLateNightMins(r)
+      }
+      transA += r.transportation_fee || 0
+      transB += r.transportation_round_trip || 0
+    }
+    const laborPay = Math.round(staff.hourly_rate * workMins / 60)
+    return { staff, byDay, workDays, workMins, lateNightMins, transA, transB, laborPay, total: laborPay + transA + transB }
+  })
 
-        rowData[0][d] = clockIn  ? `${String(clockIn.getHours()).padStart(2,'0')}:${String(clockIn.getMinutes()).padStart(2,'0')}` : ''
-        rowData[1][d] = clockOut ? `${String(clockOut.getHours()).padStart(2,'0')}:${String(clockOut.getMinutes()).padStart(2,'0')}` : '出勤中'
+  // ===================================
+  // シート①：月次サマリー
+  // ===================================
+  const ws1 = wb.addWorksheet('月次サマリー')
+  ws1.views = [{ state: 'frozen', xSplit: 0, ySplit: 3 }]
 
-        // 休憩
-        let breakMins = 0
-        if (r.break_start && r.break_end) {
-          breakMins = Math.round((new Date(r.break_end) - new Date(r.break_start)) / 60000)
-        } else if (r.break_req_status === 'approved') {
-          breakMins = r.break_req_minutes || 0
-        } else if (clockIn && clockOut) {
-          const grossMins = (clockOut - clockIn) / 60000
-          breakMins = grossMins > 480 ? 60 : grossMins > 360 ? 45 : 0
-        }
-        rowData[2][d] = breakMins > 0 ? `${Math.floor(breakMins/60)}:${String(breakMins%60).padStart(2,'0')}` : ''
+  // タイトル
+  ws1.mergeCells(1, 1, 1, 10)
+  setCell(ws1, 1, 1, `日本橋法律特許事務所　勤務実績表　${year}年${month}月`, {
+    fill: navy, font: { bold: true, size: 13, color: { argb: 'FFFFFFFF' } }, align: C
+  })
+  ws1.getRow(1).height = 26
 
-        // 深夜（22:00〜05:00）
-        let lateNightMins = 0
-        if (clockIn && clockOut) {
-          const s = new Date(clockIn), e = new Date(clockOut)
-          let cur = new Date(s)
-          while (cur < e) {
-            const h = cur.getHours()
-            const isLate = h >= 22 || h < 5
-            let next = new Date(cur)
-            if (h >= 22) { next.setDate(next.getDate()+1); next.setHours(0,0,0,0) }
-            else if (h < 5) { next.setHours(5,0,0,0) }
-            else { next.setHours(22,0,0,0) }
-            if (next > e) next = new Date(e)
-            if (isLate) lateNightMins += (next - cur) / 60000
-            cur = next
-          }
-        }
-        rowData[3][d] = lateNightMins > 0 ? `${Math.floor(lateNightMins/60)}:${String(Math.round(lateNightMins%60)).padStart(2,'0')}` : ''
+  // 空行
+  ws1.getRow(2).height = 6
 
-        if (clockIn && clockOut) {
-          const grossMins = (clockOut - clockIn) / 60000
-          totalWorkMins += Math.max(0, grossMins - breakMins)
-        }
-        totalTransA += r.transportation_fee || 0
-        totalTransB += r.transportation_round_trip || 0
+  // ヘッダー
+  const s1headers = ['氏名','区分','出勤日数','勤務時間','深夜時間','時給','労働報酬','交通費(片道)','交通費(往復)','支払合計']
+  s1headers.forEach((h, i) => {
+    setCell(ws1, 3, i + 1, h, { fill: navy, font: { bold: true, size: 10, color: { argb: 'FFFFFFFF' } }, align: C })
+  })
+  ws1.getRow(3).height = 20
+
+  // 列幅
+  ;[16, 8, 8, 10, 8, 8, 10, 10, 10, 12].forEach((w, i) => { ws1.getColumn(i + 1).width = w })
+
+  // データ行
+  let totalLaborPay = 0, totalTransA = 0, totalTransB = 0, grandTotal = 0
+  staffSummaries.forEach((s, idx) => {
+    const row = idx + 4
+    const bg  = idx % 2 === 0 ? 'FFFFFFFF' : gray
+    setCell(ws1, row, 1, s.staff.name,       { fill: bg, font: { bold: true, size: 10 }, align: L })
+    setCell(ws1, row, 2, s.staff.employment_type === 'contract' ? '業務委託' : 'アルバイト', { fill: bg, font: { size: 9 }, align: C })
+    setCell(ws1, row, 3, s.workDays,          { fill: bg, align: C })
+    setCell(ws1, row, 4, toHHMM(s.workMins),  { fill: bg, align: C })
+    setCell(ws1, row, 5, toHHMM(s.lateNightMins) || '—', { fill: bg, align: C })
+    setCell(ws1, row, 6, s.staff.hourly_rate, { fill: bg, align: R, numFmt: '#,##0' })
+    setCell(ws1, row, 7, s.laborPay,          { fill: bg, align: R, numFmt: '#,##0' })
+    setCell(ws1, row, 8, s.transA,            { fill: bg, align: R, numFmt: '#,##0' })
+    setCell(ws1, row, 9, s.transB,            { fill: bg, align: R, numFmt: '#,##0' })
+    setCell(ws1, row,10, s.total,             { fill: gold, font: { bold: true }, align: R, numFmt: '#,##0' })
+    ws1.getRow(row).height = 18
+    totalLaborPay += s.laborPay; totalTransA += s.transA; totalTransB += s.transB; grandTotal += s.total
+  })
+
+  // 合計行
+  const totRow = staffSummaries.length + 4
+  const totCells = ['合計', '', '', '', '', '', totalLaborPay, totalTransA, totalTransB, grandTotal]
+  totCells.forEach((v, i) => {
+    setCell(ws1, totRow, i + 1, v, {
+      fill: navy, font: { bold: true, color: { argb: 'FFFFFFFF' }, size: 10 },
+      align: i < 2 ? C : R, numFmt: i >= 6 ? '#,##0' : undefined
+    })
+  })
+  ws1.getRow(totRow).height = 20
+
+  // ===================================
+  // シート②以降：スタッフ別詳細
+  // ===================================
+  for (const s of staffSummaries) {
+    const ws = wb.addWorksheet(s.staff.name.replace(/[\[\]*?:/\\]/g, ''))
+    ws.views = [{ state: 'frozen', xSplit: 0, ySplit: 4 }]
+
+    // タイトル
+    ws.mergeCells(1, 1, 1, 9)
+    setCell(ws, 1, 1, `${s.staff.name}　勤務実績　${year}年${month}月`, {
+      fill: navy, font: { bold: true, size: 12, color: { argb: 'FFFFFFFF' } }, align: C
+    })
+    ws.getRow(1).height = 24
+
+    // スタッフ情報
+    ws.mergeCells(2, 1, 2, 9)
+    setCell(ws, 2, 1,
+      `区分：${s.staff.employment_type === 'contract' ? '業務委託' : 'アルバイト'}　時給：${s.staff.hourly_rate.toLocaleString()}円`,
+      { fill: blue, font: { size: 10 }, align: L }
+    )
+    ws.getRow(2).height = 16
+
+    // ヘッダー
+    const headers = ['日付','曜日','出勤','退勤','休憩','勤務時間','深夜','交通費(片)','交通費(往復)','備考']
+    headers.forEach((h, i) => {
+      setCell(ws, 3, i + 1, h, { fill: navy, font: { bold: true, size: 10, color: { argb: 'FFFFFFFF' } }, align: C })
+    })
+    ws.getRow(3).height = 18
+
+    // 追加の「備考」列
+    ws.getColumn(1).width  = 10
+    ws.getColumn(2).width  = 5
+    ws.getColumn(3).width  = 7
+    ws.getColumn(4).width  = 7
+    ws.getColumn(5).width  = 7
+    ws.getColumn(6).width  = 9
+    ws.getColumn(7).width  = 7
+    ws.getColumn(8).width  = 10
+    ws.getColumn(9).width  = 10
+    ws.getColumn(10).width = 16
+
+    // 日付行
+    let totalWorkMins = 0, totalLateNight = 0, tA = 0, tB = 0, wDays = 0
+    for (let d = 1; d <= daysInMonth; d++) {
+      const row  = d + 3
+      const date = new Date(year, month - 1, d)
+      const dow  = date.getDay()
+      const isSat = dow === 6, isSun = dow === 0
+      const bg = isSun ? sunC : isSat ? satC : 'FFFFFFFF'
+      const dowColor = isSun ? 'FFB71C1C' : isSat ? 'FF1565C0' : 'FF000000'
+
+      const dateStr = `${month}/${d}`
+      setCell(ws, row, 1, dateStr, { fill: bg, font: { size: 10, color: { argb: dowColor } }, align: C })
+      setCell(ws, row, 2, dayNames[dow], { fill: bg, font: { size: 10, color: { argb: dowColor } }, align: C })
+
+      const r = s.byDay[d]
+      if (r) {
+        const ci = r.clock_in  ? new Date(r.clock_in)  : null
+        const co = r.clock_out ? new Date(r.clock_out) : null
+        const brk = calcBreakMins(r)
+        const late = calcLateNightMins(r)
+        const gross = (ci && co) ? (co - ci) / 60000 : 0
+        const work  = Math.max(0, gross - brk)
+
+        if (co) { wDays++; totalWorkMins += work; totalLateNight += late; tA += r.transportation_fee||0; tB += r.transportation_round_trip||0 }
+
+        setCell(ws, row, 3, ci ? `${String(ci.getHours()).padStart(2,'0')}:${String(ci.getMinutes()).padStart(2,'0')}` : '', { fill: bg, align: C })
+        setCell(ws, row, 4, co ? `${String(co.getHours()).padStart(2,'0')}:${String(co.getMinutes()).padStart(2,'0')}` : '出勤中', { fill: bg, align: C, font: co ? {} : { color: { argb: 'FFE53935' } } })
+        setCell(ws, row, 5, brk  ? toHHMM(brk)  : '—', { fill: bg, align: C })
+        setCell(ws, row, 6, co   ? toHHMM(work)  : '—', { fill: bg, align: C, font: { bold: !!co } })
+        setCell(ws, row, 7, late ? toHHMM(late)  : '—', { fill: bg, align: C })
+        setCell(ws, row, 8, r.transportation_fee || 0,        { fill: bg, align: R, numFmt: '#,##0' })
+        setCell(ws, row, 9, r.transportation_round_trip || 0, { fill: bg, align: R, numFmt: '#,##0' })
+        setCell(ws, row,10, r.note || '', { fill: bg, align: L })
       } else {
-        rowData[0][d] = ''; rowData[1][d] = ''; rowData[2][d] = ''; rowData[3][d] = ''
+        for (let c = 3; c <= 10; c++) setCell(ws, row, c, '', { fill: bg, align: C })
       }
+      ws.getRow(row).height = 16
     }
 
-    const hourlyRate = staff.hourly_rate
-    const laborPay   = Math.round(hourlyRate * totalWorkMins / 60)
-    const totalPay   = laborPay + totalTransA + totalTransB
-    const workHStr   = `${Math.floor(totalWorkMins/60)}:${String(Math.round(totalWorkMins%60)).padStart(2,'0')}`
+    // 合計行
+    const totR = daysInMonth + 4
+    const laborP = Math.round(s.staff.hourly_rate * totalWorkMins / 60)
+    const totals = [`出勤 ${wDays}日`, '', '', '', '', toHHMM(totalWorkMins), toHHMM(totalLateNight)||'—', tA, tB, '']
+    totals.forEach((v, i) => {
+      setCell(ws, totR, i + 1, v, {
+        fill: gold, font: { bold: true, size: 10 }, align: i >= 7 ? R : C,
+        numFmt: i >= 7 ? '#,##0' : undefined, border: { top: med, left: thin, bottom: thin, right: thin }
+      })
+    })
 
-    // スタッフ名を最初の行だけ表示（4行結合）
-    ws.mergeCells(currentRow, 1, currentRow + 3, 1)
-    const nameCell = ws.getCell(currentRow, 1)
-    nameCell.value = staff.name
-    nameCell.alignment = { ...centerAlign, wrapText: true }
-    nameCell.font = { bold: true, size: 9 }
-    nameCell.border = border
-
-    // 集計列を最初の行のみ（4行結合）
-    const summaryRow = currentRow
-    const mergeAndSet = (col, val, fmt) => {
-      ws.mergeCells(summaryRow, col, summaryRow + 3, col)
-      const c = ws.getCell(summaryRow, col)
-      c.value = val
-      c.alignment = { ...centerAlign, wrapText: true }
-      c.font = { size: 9 }
-      c.fill = totalFill
-      c.border = border
-      if (fmt) c.numFmt = fmt
-    }
-    mergeAndSet(daysInMonth + 3, workDays)
-    mergeAndSet(daysInMonth + 4, workHStr)
-    mergeAndSet(daysInMonth + 5, hourlyRate, '#,##0')
-    mergeAndSet(daysInMonth + 6, laborPay, '#,##0')
-    mergeAndSet(daysInMonth + 7, totalTransA, '#,##0')
-    mergeAndSet(daysInMonth + 8, totalTransB, '#,##0')
-    mergeAndSet(daysInMonth + 9, totalPay, '#,##0')
-    mergeAndSet(daysInMonth + 10, staff.employment_type === 'contract' ? '業務委託' : 'アルバイト')
-
-    // 4行（出勤・退勤・休憩・深夜）
-    for (let li = 0; li < 4; li++) {
-      const row = ws.getRow(currentRow + li)
-      row.height = 16
-      row.getCell(2).value = rowLabels[li]
-      row.getCell(2).alignment = centerAlign
-      row.getCell(2).font = { size: 8 }
-      row.getCell(2).fill = subFill
-      row.getCell(2).border = border
-
-      for (let d = 1; d <= daysInMonth; d++) {
-        const dow = new Date(year, month - 1, d).getDay()
-        const cell = row.getCell(d + 2)
-        cell.value = rowData[li][d] || ''
-        cell.alignment = centerAlign
-        cell.font = { size: 8 }
-        cell.border = border
-        if (dow === 6) cell.fill = satFill
-        else if (dow === 0) cell.fill = sunFill
-      }
-    }
-
-    // スタッフ間の区切り線
-    for (let c = 1; c <= daysInMonth + 10; c++) {
-      const cell = ws.getCell(currentRow + 3, c)
-      cell.border = { ...cell.border, bottom: { style: 'medium', color: { argb: 'FF888888' } } }
-    }
-
-    currentRow += 4
+    // 給与集計（右下に）
+    const payR = totR + 2
+    ;[
+      [1, '時給', s.staff.hourly_rate, '#,##0'],
+      [1, '労働報酬', laborP, '#,##0'],
+      [1, '交通費(片道)', tA, '#,##0'],
+      [1, '交通費(往復)', tB, '#,##0'],
+      [1, '支払合計', laborP + tA + tB, '#,##0'],
+    ].forEach(([_, label, val, fmt], i) => {
+      setCell(ws, payR + i, 5, label, { fill: blue, font: { bold: true, size: 10 }, align: R })
+      setCell(ws, payR + i, 6, val,   { fill: i === 4 ? gold : 'FFFFFFFF', font: { bold: i === 4, size: 10 }, align: R, numFmt: fmt })
+    })
+    ws.getRow(totR).height = 18
   }
 
   // ===== レスポンス =====
