@@ -366,23 +366,24 @@ app.get('/api/export/monthly', async (req, res) => {
     ws.getRow(2).height = 16
 
     // ヘッダー
-    const headers = ['日付','曜日','出勤','退勤','休憩','勤務時間','深夜','交通費(片)','交通費(往復)','備考']
+    const headers = ['日付','曜日','出勤','休憩開始','休憩終了','退勤','休憩','勤務時間','深夜','交通費(片)','交通費(往復)','備考']
     headers.forEach((h, i) => {
       setCell(ws, 3, i + 1, h, { fill: navy, font: { bold: true, size: 10, color: { argb: 'FFFFFFFF' } }, align: C })
     })
     ws.getRow(3).height = 18
 
-    // 追加の「備考」列
     ws.getColumn(1).width  = 10
     ws.getColumn(2).width  = 5
     ws.getColumn(3).width  = 7
-    ws.getColumn(4).width  = 7
-    ws.getColumn(5).width  = 7
-    ws.getColumn(6).width  = 9
+    ws.getColumn(4).width  = 9
+    ws.getColumn(5).width  = 9
+    ws.getColumn(6).width  = 7
     ws.getColumn(7).width  = 7
-    ws.getColumn(8).width  = 10
-    ws.getColumn(9).width  = 10
-    ws.getColumn(10).width = 16
+    ws.getColumn(8).width  = 9
+    ws.getColumn(9).width  = 7
+    ws.getColumn(10).width = 10
+    ws.getColumn(11).width = 10
+    ws.getColumn(12).width = 16
 
     // 日付行
     let totalWorkMins = 0, totalLateNight = 0, tA = 0, tB = 0, wDays = 0
@@ -409,16 +410,21 @@ app.get('/api/export/monthly', async (req, res) => {
 
         if (co) { wDays++; totalWorkMins += work; totalLateNight += late; tA += r.transportation_fee||0; tB += r.transportation_round_trip||0 }
 
-        setCell(ws, row, 3, ci ? `${String(ci.getHours()).padStart(2,'0')}:${String(ci.getMinutes()).padStart(2,'0')}` : '', { fill: bg, align: C })
-        setCell(ws, row, 4, co ? `${String(co.getHours()).padStart(2,'0')}:${String(co.getMinutes()).padStart(2,'0')}` : '出勤中', { fill: bg, align: C, font: co ? {} : { color: { argb: 'FFE53935' } } })
-        setCell(ws, row, 5, brk  ? toHHMM(brk)  : '—', { fill: bg, align: C })
-        setCell(ws, row, 6, co   ? toHHMM(work)  : '—', { fill: bg, align: C, font: { bold: !!co } })
-        setCell(ws, row, 7, late ? toHHMM(late)  : '—', { fill: bg, align: C })
-        setCell(ws, row, 8, r.transportation_fee || 0,        { fill: bg, align: R, numFmt: '#,##0' })
-        setCell(ws, row, 9, r.transportation_round_trip || 0, { fill: bg, align: R, numFmt: '#,##0' })
-        setCell(ws, row,10, r.note || '', { fill: bg, align: L })
+        const fmt = t => `${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}`
+        const bs = r.break_start ? new Date(r.break_start) : null
+        const be = r.break_end   ? new Date(r.break_end)   : null
+        setCell(ws, row,  3, ci ? fmt(ci) : '',           { fill: bg, align: C })
+        setCell(ws, row,  4, bs ? fmt(bs) : '—',          { fill: bg, align: C })
+        setCell(ws, row,  5, be ? fmt(be) : '—',          { fill: bg, align: C })
+        setCell(ws, row,  6, co ? fmt(co) : '出勤中',     { fill: bg, align: C, font: co ? {} : { color: { argb: 'FFE53935' } } })
+        setCell(ws, row,  7, brk  ? toHHMM(brk)  : '—',  { fill: bg, align: C })
+        setCell(ws, row,  8, co   ? toHHMM(work)  : '—',  { fill: bg, align: C, font: { bold: !!co } })
+        setCell(ws, row,  9, late ? toHHMM(late)  : '—',  { fill: bg, align: C })
+        setCell(ws, row, 10, r.transportation_fee || 0,        { fill: bg, align: R, numFmt: '#,##0' })
+        setCell(ws, row, 11, r.transportation_round_trip || 0, { fill: bg, align: R, numFmt: '#,##0' })
+        setCell(ws, row, 12, r.note || '', { fill: bg, align: L })
       } else {
-        for (let c = 3; c <= 10; c++) setCell(ws, row, c, '', { fill: bg, align: C })
+        for (let c = 3; c <= 12; c++) setCell(ws, row, c, '', { fill: bg, align: C })
       }
       ws.getRow(row).height = 16
     }
@@ -426,11 +432,11 @@ app.get('/api/export/monthly', async (req, res) => {
     // 合計行
     const totR = daysInMonth + 4
     const laborP = Math.round(s.staff.hourly_rate * totalWorkMins / 60)
-    const totals = [`出勤 ${wDays}日`, '', '', '', '', toHHMM(totalWorkMins), toHHMM(totalLateNight)||'—', tA, tB, '']
+    const totals = [`出勤 ${wDays}日`, '', '', '', '', '', toHHMM(totalWorkMins), toHHMM(totalLateNight)||'—', '', tA, tB, '']
     totals.forEach((v, i) => {
       setCell(ws, totR, i + 1, v, {
-        fill: gold, font: { bold: true, size: 10 }, align: i >= 7 ? R : C,
-        numFmt: i >= 7 ? '#,##0' : undefined, border: { top: med, left: thin, bottom: thin, right: thin }
+        fill: gold, font: { bold: true, size: 10 }, align: i >= 9 ? R : C,
+        numFmt: i >= 9 ? '#,##0' : undefined, border: { top: med, left: thin, bottom: thin, right: thin }
       })
     })
 
@@ -443,8 +449,8 @@ app.get('/api/export/monthly', async (req, res) => {
       [1, '交通費(往復)', tB, '#,##0'],
       [1, '支払合計', laborP + tA + tB, '#,##0'],
     ].forEach(([_, label, val, fmt], i) => {
-      setCell(ws, payR + i, 5, label, { fill: blue, font: { bold: true, size: 10 }, align: R })
-      setCell(ws, payR + i, 6, val,   { fill: i === 4 ? gold : 'FFFFFFFF', font: { bold: i === 4, size: 10 }, align: R, numFmt: fmt })
+      setCell(ws, payR + i, 7, label, { fill: blue, font: { bold: true, size: 10 }, align: R })
+      setCell(ws, payR + i, 8, val,   { fill: i === 4 ? gold : 'FFFFFFFF', font: { bold: i === 4, size: 10 }, align: R, numFmt: fmt })
     })
     ws.getRow(totR).height = 18
   }

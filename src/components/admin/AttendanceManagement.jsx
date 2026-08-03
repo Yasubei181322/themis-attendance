@@ -70,6 +70,8 @@ export default function AttendanceManagement() {
               <th>スタッフ</th>
               <th>日付</th>
               <th>出勤</th>
+              <th>休憩開始</th>
+              <th>休憩終了</th>
               <th>退勤</th>
               <th>休憩</th>
               <th>勤務時間</th>
@@ -89,9 +91,11 @@ export default function AttendanceManagement() {
                   <td>{staff?.name || r.staffId}</td>
                   {editingId === r.id ? (
                     <>
-                      <td colSpan="2">
+                      <td>
                         <input type="datetime-local" value={editData.clockIn} onChange={e=>setEditData(p=>({...p,clockIn:e.target.value}))} className="inline-input" />
                       </td>
+                      <td>-</td>
+                      <td>-</td>
                       <td>
                         <input type="datetime-local" value={editData.clockOut} onChange={e=>setEditData(p=>({...p,clockOut:e.target.value}))} className="inline-input" />
                       </td>
@@ -109,6 +113,8 @@ export default function AttendanceManagement() {
                     <>
                       <td>{formatDate(r.clockIn)}</td>
                       <td>{formatTime(r.clockIn)}</td>
+                      <td>{r.breakStart ? formatTime(r.breakStart) : '-'}</td>
+                      <td>{r.breakEnd   ? formatTime(r.breakEnd)   : '-'}</td>
                       <td>{r.clockOut ? formatTime(r.clockOut) : <span className="in-progress">出勤中</span>}</td>
                       <td>{r.clockOut ? `${breakMins}分` : '-'}</td>
                       <td>{r.clockOut ? formatMinutes(workMins) : '-'}</td>
