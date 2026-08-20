@@ -158,7 +158,8 @@ export function calcMonthlySummary(records, staff, year, month) {
   let totalOvertimeMinutes = 0
   let totalLateNightMinutes = 0
   let totalLaborPay = 0
-  let totalTransportation = 0
+  let totalTransportationOneway = 0
+  let totalTransportationRoundTrip = 0
   let workDays = 0
 
   for (const r of filtered) {
@@ -169,8 +170,11 @@ export function calcMonthlySummary(records, staff, year, month) {
     totalOvertimeMinutes += pay.overtimeMinutes
     totalLateNightMinutes += pay.lateNightMinutes
     totalLaborPay += pay.totalPay
-    totalTransportation += (r.transportationFee || 0) + (r.transportationRoundTrip || 0)
+    totalTransportationOneway += (r.transportationFee || 0)
+    totalTransportationRoundTrip += (r.transportationRoundTrip || 0)
   }
+
+  const totalTransportation = totalTransportationOneway + totalTransportationRoundTrip
 
   const withholdingTax = staff.employmentType === 'contract'
     ? Math.round(totalLaborPay * 0.1021)
@@ -185,6 +189,8 @@ export function calcMonthlySummary(records, staff, year, month) {
     totalLateNightMinutes,
     totalLaborPay,
     totalTransportation,
+    totalTransportationOneway,
+    totalTransportationRoundTrip,
     withholdingTax,
     netPay,
     records: filtered,

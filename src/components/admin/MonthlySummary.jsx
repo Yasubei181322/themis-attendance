@@ -17,8 +17,9 @@ function DailyDetail({ records, staff }) {
           <th>休憩</th>
           <th>勤務時間</th>
           {staff.employmentType === 'parttime' && <><th>残業</th><th>深夜</th></>}
-          <th>日当</th>
-          <th>交通費</th>
+          <th>報酬</th>
+          <th>交通費(片道)</th>
+          <th>交通費(往復)</th>
         </tr>
       </thead>
       <tbody>
@@ -42,6 +43,7 @@ function DailyDetail({ records, staff }) {
               )}
               <td><strong>{pay.totalPay.toLocaleString()}円</strong></td>
               <td>{(r.transportationFee || 0).toLocaleString()}円</td>
+              <td>{(r.transportationRoundTrip || 0).toLocaleString()}円</td>
             </tr>
           )
         })}
@@ -66,10 +68,11 @@ export default function MonthlySummary() {
   const grandTotal = summaries.reduce((acc, { summary: s }) => ({
     workDays: acc.workDays + s.workDays,
     totalLaborPay: acc.totalLaborPay + s.totalLaborPay,
-    totalTransportation: acc.totalTransportation + s.totalTransportation,
+    totalTransportationOneway: acc.totalTransportationOneway + s.totalTransportationOneway,
+    totalTransportationRoundTrip: acc.totalTransportationRoundTrip + s.totalTransportationRoundTrip,
     withholdingTax: acc.withholdingTax + s.withholdingTax,
     netPay: acc.netPay + s.netPay,
-  }), { workDays: 0, totalLaborPay: 0, totalTransportation: 0, withholdingTax: 0, netPay: 0 })
+  }), { workDays: 0, totalLaborPay: 0, totalTransportationOneway: 0, totalTransportationRoundTrip: 0, withholdingTax: 0, netPay: 0 })
 
   return (
     <div className="admin-section">
@@ -97,7 +100,8 @@ export default function MonthlySummary() {
               <th>深夜時間</th>
               <th>時給</th>
               <th>労働報酬</th>
-              <th>交通費</th>
+              <th>交通費(片道)</th>
+              <th>交通費(往復)</th>
               <th>源泉徴収</th>
               <th>支払合計</th>
               <th></th>
@@ -119,7 +123,8 @@ export default function MonthlySummary() {
                   <td>{staff.employmentType === 'parttime' ? formatMinutes(s.totalLateNightMinutes) : <span className="muted">-</span>}</td>
                   <td><strong>{staff.hourlyRate.toLocaleString()}円</strong></td>
                   <td><strong>{s.totalLaborPay.toLocaleString()}円</strong></td>
-                  <td>{s.totalTransportation.toLocaleString()}円</td>
+                  <td>{s.totalTransportationOneway.toLocaleString()}円</td>
+                  <td>{s.totalTransportationRoundTrip.toLocaleString()}円</td>
                   <td className={s.withholdingTax > 0 ? 'withholding' : 'muted'}>
                     {s.withholdingTax > 0 ? `-${s.withholdingTax.toLocaleString()}円` : '-'}
                   </td>
@@ -137,7 +142,7 @@ export default function MonthlySummary() {
                 </tr>
                 {expandedId === staff.id && (
                   <tr className="detail-row">
-                    <td colSpan="12">
+                    <td colSpan="13">
                       <DailyDetail records={s.records} staff={staff} />
                     </td>
                   </tr>
@@ -149,9 +154,10 @@ export default function MonthlySummary() {
             <tr className="grand-total">
               <td colSpan="2"><strong>合計</strong></td>
               <td><strong>{grandTotal.workDays}日</strong></td>
-              <td colSpan="4"></td>
+              <td colSpan="5"></td>
               <td><strong>{grandTotal.totalLaborPay.toLocaleString()}円</strong></td>
-              <td><strong>{grandTotal.totalTransportation.toLocaleString()}円</strong></td>
+              <td><strong>{grandTotal.totalTransportationOneway.toLocaleString()}円</strong></td>
+              <td><strong>{grandTotal.totalTransportationRoundTrip.toLocaleString()}円</strong></td>
               <td><strong>{grandTotal.withholdingTax > 0 ? `-${grandTotal.withholdingTax.toLocaleString()}円` : '-'}</strong></td>
               <td><strong>{grandTotal.netPay.toLocaleString()}円</strong></td>
               <td></td>
