@@ -146,7 +146,7 @@ export function AppProvider({ children }) {
       const n = parseInt(s.id.replace(/\D/g, '')) || 0
       return n > max ? n : max
     }, 0)
-    const newStaff = { id: 'staff' + String(maxNum + 1).padStart(3, '0'), ...staffData }
+    const newStaff = { id: 'staff' + String(maxNum + 1).padStart(3, '0'), active: true, ...staffData }
     if (USE_API) {
       const created = await api('/staff', 'POST', newStaff)
       setStaffList(prev => [...prev, created])
@@ -182,9 +182,18 @@ export function AppProvider({ children }) {
   }
 
   async function deleteStaff(staffId) {
-    if (!window.confirm('このスタッフを削除しますか？\n（関連する勤怠記録は残ります）')) return
+    if (!window.confirm('このスタッフを完全に削除しますか？\n月次集計からも表示されなくなります。\n（退職者として記録を残したい場合は「退職」を使ってください）')) return
     if (USE_API) await api(`/staff/${staffId}`, 'DELETE')
     setStaffList(prev => prev.filter(s => s.id !== staffId))
+  }
+
+  async function retireStaff(staffId) {
+    if (!window.confirm('このスタッフを退職済みにしますか？\n（ログイン選択には表示されなくなりますが、月次データは残ります）')) return
+    await updateStaff(staffId, { active: false })
+  }
+
+  async function reactivateStaff(staffId) {
+    await updateStaff(staffId, { active: true })
   }
 
   const getStaff = (id) => staffList.find(s => s.id === id)
@@ -207,7 +216,7 @@ export function AppProvider({ children }) {
       loginStaff, loginAdmin, logout,
       clockIn, clockOut, updateRecord, deleteRecord,
       submitBreakRequest, approveBreakRequest, rejectBreakRequest,
-      updateStaff, addStaff, deleteStaff, startBreak, endBreak,
+      updateStaff, addStaff, deleteStaff, retireStaff, reactivateStaff, startBreak, endBreak,
       getStaff, getStaffRecords, getActiveRecord,
     }}>
       {children}

@@ -254,6 +254,8 @@ button { cursor: pointer; }
 
 .btn-danger { background: var(--red); color: var(--white); }
 .btn-danger:hover { background: #a93226; }
+.btn-warning { background: #e8a33d; color: var(--white); }
+.btn-warning:hover { background: #c8862a; }
 
 .btn-approve { background: var(--green); color: var(--white); }
 .btn-approve:hover { background: #166040; }
@@ -727,6 +729,18 @@ button { cursor: pointer; }
 
 .emp-badge.parttime { background: #e8f0fe; color: #1a5296; }
 .emp-badge.contract { background: #fdf4e7; color: #8b5e00; }
+
+/* Staff status badge */
+.status-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 600;
+}
+.status-badge.active { background: #e6f4ea; color: #1e7b34; }
+.status-badge.retired { background: #f1f1f1; color: #777; }
+.retired-row { opacity: 0.55; }
 
 /* ===== Filter row ===== */
 .filter-row {

@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useApp } from '../../contexts/AppContext.jsx'
 
 export default function StaffManagement() {
-  const { staffList, updateStaff, addStaff, deleteStaff } = useApp()
+  const { staffList, updateStaff, addStaff, deleteStaff, retireStaff, reactivateStaff } = useApp()
   const [editingId, setEditingId] = useState(null)
   const [editData, setEditData] = useState({})
   const [showAdd, setShowAdd] = useState(false)
@@ -84,12 +84,13 @@ export default function StaffManagement() {
             <th>PIN</th>
             <th>時給</th>
             <th>契約形態</th>
+            <th>状態</th>
             <th>操作</th>
           </tr>
         </thead>
         <tbody>
           {staffList.map(staff => (
-            <tr key={staff.id}>
+            <tr key={staff.id} className={staff.active === false ? 'retired-row' : ''}>
               <td className="muted">{staff.id}</td>
               {editingId === staff.id ? (
                 <>
@@ -102,6 +103,7 @@ export default function StaffManagement() {
                       <option value="contract">業務委託</option>
                     </select>
                   </td>
+                  <td>{staff.active === false ? <span className="muted">退職済</span> : <span className="muted">在籍中</span>}</td>
                   <td>
                     <button className="btn btn-sm btn-primary" onClick={() => saveEdit(staff.id)}>保存</button>
                     <button className="btn btn-sm btn-ghost" onClick={() => setEditingId(null)}>取消</button>
@@ -114,7 +116,17 @@ export default function StaffManagement() {
                   <td><strong>{staff.hourlyRate.toLocaleString()}円</strong></td>
                   <td><span className={`emp-badge ${staff.employmentType}`}>{staff.employmentType === 'parttime' ? 'アルバイト' : '業務委託'}</span></td>
                   <td>
+                    {staff.active === false
+                      ? <span className="status-badge retired">退職済</span>
+                      : <span className="status-badge active">在籍中</span>}
+                  </td>
+                  <td>
                     <button className="btn btn-sm btn-secondary" onClick={() => startEdit(staff)}>編集</button>
+                    {staff.active === false ? (
+                      <button className="btn btn-sm btn-secondary" onClick={() => reactivateStaff(staff.id)} style={{marginLeft:6}}>復職</button>
+                    ) : (
+                      <button className="btn btn-sm btn-warning" onClick={() => retireStaff(staff.id)} style={{marginLeft:6}}>退職</button>
+                    )}
                     <button className="btn btn-sm btn-danger" onClick={() => deleteStaff(staff.id)} style={{marginLeft:6}}>削除</button>
                   </td>
                 </>

@@ -60,7 +60,7 @@ export default function Login() {
                 onChange={e => { setSelectedStaffId(e.target.value); setPin(''); setError('') }}
               >
                 <option value="">-- 選択してください --</option>
-                {staffList.map(s => (
+                {staffList.filter(s => s.active !== false).map(s => (
                   <option key={s.id} value={s.id}>{s.name}</option>
                 ))}
               </select>

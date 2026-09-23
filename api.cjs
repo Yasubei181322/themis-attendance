@@ -26,9 +26,11 @@ async function initDB() {
         name TEXT NOT NULL,
         pin TEXT NOT NULL,
         hourly_rate INTEGER NOT NULL,
-        employment_type TEXT NOT NULL
+        employment_type TEXT NOT NULL,
+        active BOOLEAN NOT NULL DEFAULT true
       )
     `)
+    await client.query('ALTER TABLE staff ADD COLUMN IF NOT EXISTS active BOOLEAN NOT NULL DEFAULT true')
     await client.query(`
       CREATE TABLE IF NOT EXISTS records (
         id TEXT PRIMARY KEY,
@@ -104,25 +106,26 @@ app.get('/api/staff', async (req, res) => {
   res.json(rows.map(r => ({
     id: r.id, name: r.name, pin: r.pin,
     hourlyRate: r.hourly_rate, employmentType: r.employment_type,
+    active: r.active,
   })))
 })
 
 app.post('/api/staff', async (req, res) => {
   const { id, name, pin, hourlyRate, employmentType } = req.body
   await pool.query(
-    'INSERT INTO staff VALUES ($1,$2,$3,$4,$5)',
+    'INSERT INTO staff (id, name, pin, hourly_rate, employment_type, active) VALUES ($1,$2,$3,$4,$5,true)',
     [id, name, pin, hourlyRate, employmentType]
   )
-  res.json({ id, name, pin, hourlyRate, employmentType })
+  res.json({ id, name, pin, hourlyRate, employmentType, active: true })
 })
 
 app.put('/api/staff/:id', async (req, res) => {
-  const { name, pin, hourlyRate, employmentType } = req.body
+  const { name, pin, hourlyRate, employmentType, active } = req.body
   await pool.query(
-    'UPDATE staff SET name=$1, pin=$2, hourly_rate=$3, employment_type=$4 WHERE id=$5',
-    [name, pin, hourlyRate, employmentType, req.params.id]
+    'UPDATE staff SET name=$1, pin=$2, hourly_rate=$3, employment_type=$4, active=$5 WHERE id=$6',
+    [name, pin, hourlyRate, employmentType, active !== false, req.params.id]
   )
-  res.json({ id: req.params.id, name, pin, hourlyRate, employmentType })
+  res.json({ id: req.params.id, name, pin, hourlyRate, employmentType, active: active !== false })
 })
 
 app.delete('/api/staff/:id', async (req, res) => {

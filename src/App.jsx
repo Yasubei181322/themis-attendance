@@ -5,16 +5,7 @@ import StaffDashboard from './components/staff/StaffDashboard.jsx'
 import AdminDashboard from './components/admin/AdminDashboard.jsx'
 
 function AppInner() {
-  const { currentUser, loading } = useApp()
-
-  if (loading) {
-    return (
-      <div className="app-loading">
-        <div className="app-loading-spinner" />
-        <p>読み込み中...</p>
-      </div>
-    )
-  }
+  const { currentUser } = useApp()
 
   if (!currentUser) return <Login />
   if (currentUser.type === 'admin') return <AdminDashboard />
