@@ -647,3 +647,657 @@ Stacktrace:   場所 System.Runtime.InteropServices.Marshal.ThrowExceptionForHRI
    場所 winsw.WrapperService.OnShutdown()
 2026-08-12 23:59:53 - Starting C:\Program Files\nodejs\node.exe  C:\Users\nakay\law-firm-attendance\node_modules\node-windows\lib\wrapper.js --file C:\Users\nakay\law-firm-attendance\server.cjs --scriptoptions= --log "Themis勤怠管理 wrapper" --grow 0.5 --wait 2 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
 2026-08-12 23:59:53 - Started 9712
+2026-08-25 11:34:08 - Stopping themis.exe
+2026-08-25 11:34:08 - ProcessKill 9712
+2026-08-25 11:34:08 - Shutdown exception
+Message:システム シャットダウンが実行中です。
+
+Stacktrace:   場所 System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   場所 System.Management.ManagementScope.InitializeGuts(Object o)
+   場所 System.Management.ManagementScope.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Get()
+   場所 winsw.WrapperService.GetChildPids(Int32 pid)
+   場所 winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   場所 winsw.WrapperService.StopIt()
+   場所 winsw.WrapperService.OnShutdown()
+2026-08-25 11:35:36 - Starting C:\Program Files\nodejs\node.exe  C:\Users\nakay\law-firm-attendance\node_modules\node-windows\lib\wrapper.js --file C:\Users\nakay\law-firm-attendance\server.cjs --scriptoptions= --log "Themis勤怠管理 wrapper" --grow 0.5 --wait 2 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2026-08-25 11:35:37 - Started 12204
+2026-08-28 22:40:02 - Stopping themis.exe
+2026-08-28 22:40:02 - ProcessKill 12204
+2026-08-28 22:40:02 - Shutdown exception
+Message:システム シャットダウンが実行中です。
+
+Stacktrace:   場所 System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   場所 System.Management.ManagementScope.InitializeGuts(Object o)
+   場所 System.Management.ManagementScope.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Get()
+   場所 winsw.WrapperService.GetChildPids(Int32 pid)
+   場所 winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   場所 winsw.WrapperService.StopIt()
+   場所 winsw.WrapperService.OnShutdown()
+2026-08-28 22:41:03 - Starting C:\Program Files\nodejs\node.exe  C:\Users\nakay\law-firm-attendance\node_modules\node-windows\lib\wrapper.js --file C:\Users\nakay\law-firm-attendance\server.cjs --scriptoptions= --log "Themis勤怠管理 wrapper" --grow 0.5 --wait 2 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2026-08-28 22:41:04 - Started 1524
+2026-08-28 22:42:12 - Stopping themis.exe
+2026-08-28 22:42:12 - ProcessKill 1524
+2026-08-28 22:42:12 - Shutdown exception
+Message:システム シャットダウンが実行中です。
+
+Stacktrace:   場所 System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   場所 System.Management.ManagementScope.InitializeGuts(Object o)
+   場所 System.Management.ManagementScope.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Get()
+   場所 winsw.WrapperService.GetChildPids(Int32 pid)
+   場所 winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   場所 winsw.WrapperService.StopIt()
+   場所 winsw.WrapperService.OnShutdown()
+2026-08-28 22:43:02 - Starting C:\Program Files\nodejs\node.exe  C:\Users\nakay\law-firm-attendance\node_modules\node-windows\lib\wrapper.js --file C:\Users\nakay\law-firm-attendance\server.cjs --scriptoptions= --log "Themis勤怠管理 wrapper" --grow 0.5 --wait 2 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2026-08-28 22:43:02 - Started 9656
+2026-08-28 22:43:24 - Stopping themis.exe
+2026-08-28 22:43:24 - ProcessKill 9656
+2026-08-28 22:43:24 - Shutdown exception
+Message:システム シャットダウンが実行中です。
+
+Stacktrace:   場所 System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   場所 System.Management.ManagementScope.InitializeGuts(Object o)
+   場所 System.Management.ManagementScope.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Get()
+   場所 winsw.WrapperService.GetChildPids(Int32 pid)
+   場所 winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   場所 winsw.WrapperService.StopIt()
+   場所 winsw.WrapperService.OnShutdown()
+2026-08-28 22:44:14 - Starting C:\Program Files\nodejs\node.exe  C:\Users\nakay\law-firm-attendance\node_modules\node-windows\lib\wrapper.js --file C:\Users\nakay\law-firm-attendance\server.cjs --scriptoptions= --log "Themis勤怠管理 wrapper" --grow 0.5 --wait 2 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2026-08-28 22:44:14 - Started 9448
+2026-08-28 22:44:34 - Stopping themis.exe
+2026-08-28 22:44:34 - ProcessKill 9448
+2026-08-28 22:44:34 - Shutdown exception
+Message:システム シャットダウンが実行中です。
+
+Stacktrace:   場所 System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   場所 System.Management.ManagementScope.InitializeGuts(Object o)
+   場所 System.Management.ManagementScope.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Get()
+   場所 winsw.WrapperService.GetChildPids(Int32 pid)
+   場所 winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   場所 winsw.WrapperService.StopIt()
+   場所 winsw.WrapperService.OnShutdown()
+2026-08-29 16:47:33 - Starting C:\Program Files\nodejs\node.exe  C:\Users\nakay\law-firm-attendance\node_modules\node-windows\lib\wrapper.js --file C:\Users\nakay\law-firm-attendance\server.cjs --scriptoptions= --log "Themis勤怠管理 wrapper" --grow 0.5 --wait 2 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2026-08-29 16:47:33 - Started 10076
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          2026-08-30 20:09:33 - Starting C:\Program Files\nodejs\node.exe  C:\Users\nakay\law-firm-attendance\node_modules\node-windows\lib\wrapper.js --file C:\Users\nakay\law-firm-attendance\server.cjs --scriptoptions= --log "Themis勤怠管理 wrapper" --grow 0.5 --wait 2 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2026-08-30 20:09:33 - Started 14288
+2026-09-02 21:01:25 - Stopping themis.exe
+2026-09-02 21:01:25 - ProcessKill 14288
+2026-09-02 21:01:25 - Shutdown exception
+Message:システム シャットダウンが実行中です。
+
+Stacktrace:   場所 System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   場所 System.Management.ManagementScope.InitializeGuts(Object o)
+   場所 System.Management.ManagementScope.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Get()
+   場所 winsw.WrapperService.GetChildPids(Int32 pid)
+   場所 winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   場所 winsw.WrapperService.StopIt()
+   場所 winsw.WrapperService.OnShutdown()
+2026-09-02 21:14:36 - Starting C:\Program Files\nodejs\node.exe  C:\Users\nakay\law-firm-attendance\node_modules\node-windows\lib\wrapper.js --file C:\Users\nakay\law-firm-attendance\server.cjs --scriptoptions= --log "Themis勤怠管理 wrapper" --grow 0.5 --wait 2 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2026-09-02 21:14:36 - Started 15840
+2026-09-03 04:19:59 - Stopping themis.exe
+2026-09-03 04:19:59 - ProcessKill 15840
+2026-09-03 04:19:59 - Shutdown exception
+Message:クラスが登録されていません
+
+Stacktrace:   場所 System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   場所 System.Management.ManagementScope.InitializeGuts(Object o)
+   場所 System.Management.ManagementScope.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Get()
+   場所 winsw.WrapperService.GetChildPids(Int32 pid)
+   場所 winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   場所 winsw.WrapperService.StopIt()
+   場所 winsw.WrapperService.OnShutdown()
+2026-09-03 04:21:06 - Starting C:\Program Files\nodejs\node.exe  C:\Users\nakay\law-firm-attendance\node_modules\node-windows\lib\wrapper.js --file C:\Users\nakay\law-firm-attendance\server.cjs --scriptoptions= --log "Themis勤怠管理 wrapper" --grow 0.5 --wait 2 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2026-09-03 04:21:06 - Started 16188
+2026-09-06 21:53:27 - Starting C:\Program Files\nodejs\node.exe  C:\Users\nakay\law-firm-attendance\node_modules\node-windows\lib\wrapper.js --file C:\Users\nakay\law-firm-attendance\server.cjs --scriptoptions= --log "Themis勤怠管理 wrapper" --grow 0.5 --wait 2 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2026-09-06 21:53:27 - Started 10472
+2026-09-07 10:01:55 - Stopping themis.exe
+2026-09-07 10:01:55 - ProcessKill 10472
+2026-09-07 10:01:56 - Shutdown exception
+Message:クラスが登録されていません
+
+Stacktrace:   場所 System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   場所 System.Management.ManagementScope.InitializeGuts(Object o)
+   場所 System.Management.ManagementScope.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Get()
+   場所 winsw.WrapperService.GetChildPids(Int32 pid)
+   場所 winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   場所 winsw.WrapperService.StopIt()
+   場所 winsw.WrapperService.OnShutdown()
+2026-09-07 10:04:37 - Starting C:\Program Files\nodejs\node.exe  C:\Users\nakay\law-firm-attendance\node_modules\node-windows\lib\wrapper.js --file C:\Users\nakay\law-firm-attendance\server.cjs --scriptoptions= --log "Themis勤怠管理 wrapper" --grow 0.5 --wait 2 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2026-09-07 10:04:37 - Started 11624
+2026-09-07 16:22:48 - Stopping themis.exe
+2026-09-07 16:22:48 - ProcessKill 11624
+2026-09-07 16:22:48 - Shutdown exception
+Message:クラスが登録されていません
+
+Stacktrace:   場所 System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   場所 System.Management.ManagementScope.InitializeGuts(Object o)
+   場所 System.Management.ManagementScope.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Get()
+   場所 winsw.WrapperService.GetChildPids(Int32 pid)
+   場所 winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   場所 winsw.WrapperService.StopIt()
+   場所 winsw.WrapperService.OnShutdown()
+2026-09-07 16:26:45 - Starting C:\Program Files\nodejs\node.exe  C:\Users\nakay\law-firm-attendance\node_modules\node-windows\lib\wrapper.js --file C:\Users\nakay\law-firm-attendance\server.cjs --scriptoptions= --log "Themis勤怠管理 wrapper" --grow 0.5 --wait 2 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2026-09-07 16:26:45 - Started 11792
+2026-09-08 23:06:42 - Stopping themis.exe
+2026-09-08 23:06:42 - ProcessKill 11792
+2026-09-08 23:06:42 - Shutdown exception
+Message:クラスが登録されていません
+
+Stacktrace:   場所 System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   場所 System.Management.ManagementScope.InitializeGuts(Object o)
+   場所 System.Management.ManagementScope.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Get()
+   場所 winsw.WrapperService.GetChildPids(Int32 pid)
+   場所 winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   場所 winsw.WrapperService.StopIt()
+   場所 winsw.WrapperService.OnShutdown()
+2026-09-08 23:14:13 - Starting C:\Program Files\nodejs\node.exe  C:\Users\nakay\law-firm-attendance\node_modules\node-windows\lib\wrapper.js --file C:\Users\nakay\law-firm-attendance\server.cjs --scriptoptions= --log "Themis勤怠管理 wrapper" --grow 0.5 --wait 2 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2026-09-08 23:14:14 - Started 15596
+2026-09-10 16:15:13 - Stopping themis.exe
+2026-09-10 16:15:13 - ProcessKill 15596
+2026-09-10 16:15:13 - Shutdown exception
+Message:クラスが登録されていません
+
+Stacktrace:   場所 System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   場所 System.Management.ManagementScope.InitializeGuts(Object o)
+   場所 System.Management.ManagementScope.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Get()
+   場所 winsw.WrapperService.GetChildPids(Int32 pid)
+   場所 winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   場所 winsw.WrapperService.StopIt()
+   場所 winsw.WrapperService.OnShutdown()
+2026-09-10 16:17:35 - Starting C:\Program Files\nodejs\node.exe  C:\Users\nakay\law-firm-attendance\node_modules\node-windows\lib\wrapper.js --file C:\Users\nakay\law-firm-attendance\server.cjs --scriptoptions= --log "Themis勤怠管理 wrapper" --grow 0.5 --wait 2 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2026-09-10 16:17:35 - Started 15416
+2026-09-11 01:40:04 - Stopping themis.exe
+2026-09-11 01:40:04 - ProcessKill 15416
+2026-09-11 01:40:04 - Shutdown exception
+Message:クラスが登録されていません
+
+Stacktrace:   場所 System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   場所 System.Management.ManagementScope.InitializeGuts(Object o)
+   場所 System.Management.ManagementScope.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Get()
+   場所 winsw.WrapperService.GetChildPids(Int32 pid)
+   場所 winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   場所 winsw.WrapperService.StopIt()
+   場所 winsw.WrapperService.OnShutdown()
+2026-09-11 01:41:18 - Starting C:\Program Files\nodejs\node.exe  C:\Users\nakay\law-firm-attendance\node_modules\node-windows\lib\wrapper.js --file C:\Users\nakay\law-firm-attendance\server.cjs --scriptoptions= --log "Themis勤怠管理 wrapper" --grow 0.5 --wait 2 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2026-09-11 01:41:18 - Started 17048
+2026-09-11 08:23:59 - Stopping themis.exe
+2026-09-11 08:23:59 - ProcessKill 17048
+2026-09-11 08:23:59 - Shutdown exception
+Message:クラスが登録されていません
+
+Stacktrace:   場所 System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   場所 System.Management.ManagementScope.InitializeGuts(Object o)
+   場所 System.Management.ManagementScope.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Get()
+   場所 winsw.WrapperService.GetChildPids(Int32 pid)
+   場所 winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   場所 winsw.WrapperService.StopIt()
+   場所 winsw.WrapperService.OnShutdown()
+2026-09-11 08:24:55 - Starting C:\Program Files\nodejs\node.exe  C:\Users\nakay\law-firm-attendance\node_modules\node-windows\lib\wrapper.js --file C:\Users\nakay\law-firm-attendance\server.cjs --scriptoptions= --log "Themis勤怠管理 wrapper" --grow 0.5 --wait 2 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2026-09-11 08:24:55 - Started 9864
+2026-09-11 08:26:51 - Stopping themis.exe
+2026-09-11 08:26:51 - ProcessKill 9864
+2026-09-11 08:26:51 - Shutdown exception
+Message:クラスが登録されていません
+
+Stacktrace:   場所 System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   場所 System.Management.ManagementScope.InitializeGuts(Object o)
+   場所 System.Management.ManagementScope.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Get()
+   場所 winsw.WrapperService.GetChildPids(Int32 pid)
+   場所 winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   場所 winsw.WrapperService.StopIt()
+   場所 winsw.WrapperService.OnShutdown()
+2026-09-11 08:27:41 - Starting C:\Program Files\nodejs\node.exe  C:\Users\nakay\law-firm-attendance\node_modules\node-windows\lib\wrapper.js --file C:\Users\nakay\law-firm-attendance\server.cjs --scriptoptions= --log "Themis勤怠管理 wrapper" --grow 0.5 --wait 2 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2026-09-11 08:27:41 - Started 10012
+2026-09-11 08:28:01 - Stopping themis.exe
+2026-09-11 08:28:01 - ProcessKill 10012
+2026-09-11 08:28:01 - Shutdown exception
+Message:クラスが登録されていません
+
+Stacktrace:   場所 System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   場所 System.Management.ManagementScope.InitializeGuts(Object o)
+   場所 System.Management.ManagementScope.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Get()
+   場所 winsw.WrapperService.GetChildPids(Int32 pid)
+   場所 winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   場所 winsw.WrapperService.StopIt()
+   場所 winsw.WrapperService.OnShutdown()
+2026-09-11 08:28:49 - Starting C:\Program Files\nodejs\node.exe  C:\Users\nakay\law-firm-attendance\node_modules\node-windows\lib\wrapper.js --file C:\Users\nakay\law-firm-attendance\server.cjs --scriptoptions= --log "Themis勤怠管理 wrapper" --grow 0.5 --wait 2 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2026-09-11 08:28:50 - Started 9488
+2026-09-11 12:45:05 - Stopping themis.exe
+2026-09-11 12:45:05 - ProcessKill 9488
+2026-09-11 12:45:05 - Shutdown exception
+Message:クラスが登録されていません
+
+Stacktrace:   場所 System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   場所 System.Management.ManagementScope.InitializeGuts(Object o)
+   場所 System.Management.ManagementScope.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Get()
+   場所 winsw.WrapperService.GetChildPids(Int32 pid)
+   場所 winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   場所 winsw.WrapperService.StopIt()
+   場所 winsw.WrapperService.OnShutdown()
+2026-09-11 12:46:47 - Starting C:\Program Files\nodejs\node.exe  C:\Users\nakay\law-firm-attendance\node_modules\node-windows\lib\wrapper.js --file C:\Users\nakay\law-firm-attendance\server.cjs --scriptoptions= --log "Themis勤怠管理 wrapper" --grow 0.5 --wait 2 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2026-09-11 12:46:47 - Started 12012
+2026-09-11 20:18:54 - Stopping themis.exe
+2026-09-11 20:18:54 - ProcessKill 12012
+2026-09-11 20:18:54 - Shutdown exception
+Message:クラスが登録されていません
+
+Stacktrace:   場所 System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   場所 System.Management.ManagementScope.InitializeGuts(Object o)
+   場所 System.Management.ManagementScope.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Get()
+   場所 winsw.WrapperService.GetChildPids(Int32 pid)
+   場所 winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   場所 winsw.WrapperService.StopIt()
+   場所 winsw.WrapperService.OnShutdown()
+2026-09-11 20:20:03 - Starting C:\Program Files\nodejs\node.exe  C:\Users\nakay\law-firm-attendance\node_modules\node-windows\lib\wrapper.js --file C:\Users\nakay\law-firm-attendance\server.cjs --scriptoptions= --log "Themis勤怠管理 wrapper" --grow 0.5 --wait 2 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2026-09-11 20:20:03 - Started 2556
+2026-09-11 20:33:06 - Stopping themis.exe
+2026-09-11 20:33:06 - ProcessKill 2556
+2026-09-11 20:33:06 - Shutdown exception
+Message:システム シャットダウンが実行中です。
+
+Stacktrace:   場所 System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   場所 System.Management.ManagementScope.InitializeGuts(Object o)
+   場所 System.Management.ManagementScope.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Get()
+   場所 winsw.WrapperService.GetChildPids(Int32 pid)
+   場所 winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   場所 winsw.WrapperService.StopIt()
+   場所 winsw.WrapperService.OnShutdown()
+2026-09-11 20:34:14 - Starting C:\Program Files\nodejs\node.exe  C:\Users\nakay\law-firm-attendance\node_modules\node-windows\lib\wrapper.js --file C:\Users\nakay\law-firm-attendance\server.cjs --scriptoptions= --log "Themis勤怠管理 wrapper" --grow 0.5 --wait 2 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2026-09-11 20:34:15 - Started 15544
+2026-09-12 05:58:23 - Starting C:\Program Files\nodejs\node.exe  C:\Users\nakay\law-firm-attendance\node_modules\node-windows\lib\wrapper.js --file C:\Users\nakay\law-firm-attendance\server.cjs --scriptoptions= --log "Themis勤怠管理 wrapper" --grow 0.5 --wait 2 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2026-09-12 05:58:23 - Started 10112
+2026-09-12 07:18:12 - Stopping themis.exe
+2026-09-12 07:18:12 - ProcessKill 10112
+2026-09-12 07:18:12 - Shutdown exception
+Message:クラスが登録されていません
+
+Stacktrace:   場所 System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   場所 System.Management.ManagementScope.InitializeGuts(Object o)
+   場所 System.Management.ManagementScope.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Get()
+   場所 winsw.WrapperService.GetChildPids(Int32 pid)
+   場所 winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   場所 winsw.WrapperService.StopIt()
+   場所 winsw.WrapperService.OnShutdown()
+2026-09-12 07:19:09 - Starting C:\Program Files\nodejs\node.exe  C:\Users\nakay\law-firm-attendance\node_modules\node-windows\lib\wrapper.js --file C:\Users\nakay\law-firm-attendance\server.cjs --scriptoptions= --log "Themis勤怠管理 wrapper" --grow 0.5 --wait 2 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2026-09-12 07:19:09 - Started 16072
+2026-09-12 15:52:39 - Stopping themis.exe
+2026-09-12 15:52:39 - ProcessKill 16072
+2026-09-12 15:52:39 - Shutdown exception
+Message:クラスが登録されていません
+
+Stacktrace:   場所 System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   場所 System.Management.ManagementScope.InitializeGuts(Object o)
+   場所 System.Management.ManagementScope.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Get()
+   場所 winsw.WrapperService.GetChildPids(Int32 pid)
+   場所 winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   場所 winsw.WrapperService.StopIt()
+   場所 winsw.WrapperService.OnShutdown()
+2026-09-12 15:53:24 - Starting C:\Program Files\nodejs\node.exe  C:\Users\nakay\law-firm-attendance\node_modules\node-windows\lib\wrapper.js --file C:\Users\nakay\law-firm-attendance\server.cjs --scriptoptions= --log "Themis勤怠管理 wrapper" --grow 0.5 --wait 2 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2026-09-12 15:53:24 - Started 11824
+2026-09-12 15:59:47 - Stopping themis.exe
+2026-09-12 15:59:47 - ProcessKill 11824
+2026-09-12 15:59:47 - Shutdown exception
+Message:システム シャットダウンが実行中です。
+
+Stacktrace:   場所 System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   場所 System.Management.ManagementScope.InitializeGuts(Object o)
+   場所 System.Management.ManagementScope.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Get()
+   場所 winsw.WrapperService.GetChildPids(Int32 pid)
+   場所 winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   場所 winsw.WrapperService.StopIt()
+   場所 winsw.WrapperService.OnShutdown()
+2026-09-12 16:00:43 - Starting C:\Program Files\nodejs\node.exe  C:\Users\nakay\law-firm-attendance\node_modules\node-windows\lib\wrapper.js --file C:\Users\nakay\law-firm-attendance\server.cjs --scriptoptions= --log "Themis勤怠管理 wrapper" --grow 0.5 --wait 2 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2026-09-12 16:00:43 - Started 15596
+2026-09-13 12:14:25 - Stopping themis.exe
+2026-09-13 12:14:25 - ProcessKill 15596
+2026-09-13 12:14:25 - Shutdown exception
+Message:クラスが登録されていません
+
+Stacktrace:   場所 System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   場所 System.Management.ManagementScope.InitializeGuts(Object o)
+   場所 System.Management.ManagementScope.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Get()
+   場所 winsw.WrapperService.GetChildPids(Int32 pid)
+   場所 winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   場所 winsw.WrapperService.StopIt()
+   場所 winsw.WrapperService.OnShutdown()
+2026-09-13 12:15:26 - Starting C:\Program Files\nodejs\node.exe  C:\Users\nakay\law-firm-attendance\node_modules\node-windows\lib\wrapper.js --file C:\Users\nakay\law-firm-attendance\server.cjs --scriptoptions= --log "Themis勤怠管理 wrapper" --grow 0.5 --wait 2 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2026-09-13 12:15:26 - Started 14960
+2026-09-14 00:06:47 - Stopping themis.exe
+2026-09-14 00:06:47 - ProcessKill 14960
+2026-09-14 00:06:48 - Shutdown exception
+Message:クラスが登録されていません
+
+Stacktrace:   場所 System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   場所 System.Management.ManagementScope.InitializeGuts(Object o)
+   場所 System.Management.ManagementScope.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Get()
+   場所 winsw.WrapperService.GetChildPids(Int32 pid)
+   場所 winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   場所 winsw.WrapperService.StopIt()
+   場所 winsw.WrapperService.OnShutdown()
+2026-09-14 01:08:39 - Starting C:\Program Files\nodejs\node.exe  C:\Users\nakay\law-firm-attendance\node_modules\node-windows\lib\wrapper.js --file C:\Users\nakay\law-firm-attendance\server.cjs --scriptoptions= --log "Themis勤怠管理 wrapper" --grow 0.5 --wait 2 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2026-09-14 12:38:10 - Starting C:\Program Files\nodejs\node.exe  C:\Users\nakay\law-firm-attendance\node_modules\node-windows\lib\wrapper.js --file C:\Users\nakay\law-firm-attendance\server.cjs --scriptoptions= --log "Themis勤怠管理 wrapper" --grow 0.5 --wait 2 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2026-09-14 12:38:10 - Started 15924
+2026-09-14 23:59:36 - Starting C:\Program Files\nodejs\node.exe  C:\Users\nakay\law-firm-attendance\node_modules\node-windows\lib\wrapper.js --file C:\Users\nakay\law-firm-attendance\server.cjs --scriptoptions= --log "Themis勤怠管理 wrapper" --grow 0.5 --wait 2 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2026-09-14 23:59:36 - Started 14592
+2026-09-15 00:01:23 - Stopping themis.exe
+2026-09-15 00:01:23 - ProcessKill 14592
+2026-09-15 00:01:23 - Shutdown exception
+Message:クラスが登録されていません
+
+Stacktrace:   場所 System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   場所 System.Management.ManagementScope.InitializeGuts(Object o)
+   場所 System.Management.ManagementScope.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Get()
+   場所 winsw.WrapperService.GetChildPids(Int32 pid)
+   場所 winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   場所 winsw.WrapperService.StopIt()
+   場所 winsw.WrapperService.OnShutdown()
+2026-09-15 05:29:00 - Starting C:\Program Files\nodejs\node.exe  C:\Users\nakay\law-firm-attendance\node_modules\node-windows\lib\wrapper.js --file C:\Users\nakay\law-firm-attendance\server.cjs --scriptoptions= --log "Themis勤怠管理 wrapper" --grow 0.5 --wait 2 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2026-09-15 05:29:00 - Started 15252
+2026-09-15 12:17:18 - Stopping themis.exe
+2026-09-15 12:17:18 - ProcessKill 15252
+2026-09-15 12:17:18 - Shutdown exception
+Message:クラスが登録されていません
+
+Stacktrace:   場所 System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   場所 System.Management.ManagementScope.InitializeGuts(Object o)
+   場所 System.Management.ManagementScope.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Get()
+   場所 winsw.WrapperService.GetChildPids(Int32 pid)
+   場所 winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   場所 winsw.WrapperService.StopIt()
+   場所 winsw.WrapperService.OnShutdown()
+2026-09-15 12:21:22 - Starting C:\Program Files\nodejs\node.exe  C:\Users\nakay\law-firm-attendance\node_modules\node-windows\lib\wrapper.js --file C:\Users\nakay\law-firm-attendance\server.cjs --scriptoptions= --log "Themis勤怠管理 wrapper" --grow 0.5 --wait 2 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2026-09-15 12:21:23 - Started 8672
+2026-09-15 12:22:03 - Stopping themis.exe
+2026-09-15 12:22:03 - ProcessKill 8672
+2026-09-15 12:22:03 - Shutdown exception
+Message:クラスが登録されていません
+
+Stacktrace:   場所 System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   場所 System.Management.ManagementScope.InitializeGuts(Object o)
+   場所 System.Management.ManagementScope.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Get()
+   場所 winsw.WrapperService.GetChildPids(Int32 pid)
+   場所 winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   場所 winsw.WrapperService.StopIt()
+   場所 winsw.WrapperService.OnShutdown()
+2026-09-15 12:22:50 - Starting C:\Program Files\nodejs\node.exe  C:\Users\nakay\law-firm-attendance\node_modules\node-windows\lib\wrapper.js --file C:\Users\nakay\law-firm-attendance\server.cjs --scriptoptions= --log "Themis勤怠管理 wrapper" --grow 0.5 --wait 2 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2026-09-15 12:22:50 - Started 9144
+2026-09-15 12:23:11 - Stopping themis.exe
+2026-09-15 12:23:11 - ProcessKill 9144
+2026-09-15 12:23:11 - Shutdown exception
+Message:クラスが登録されていません
+
+Stacktrace:   場所 System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   場所 System.Management.ManagementScope.InitializeGuts(Object o)
+   場所 System.Management.ManagementScope.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Get()
+   場所 winsw.WrapperService.GetChildPids(Int32 pid)
+   場所 winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   場所 winsw.WrapperService.StopIt()
+   場所 winsw.WrapperService.OnShutdown()
+2026-09-15 12:23:59 - Starting C:\Program Files\nodejs\node.exe  C:\Users\nakay\law-firm-attendance\node_modules\node-windows\lib\wrapper.js --file C:\Users\nakay\law-firm-attendance\server.cjs --scriptoptions= --log "Themis勤怠管理 wrapper" --grow 0.5 --wait 2 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2026-09-15 12:23:59 - Started 9952
+2026-09-15 20:54:34 - Stopping themis.exe
+2026-09-15 20:54:34 - ProcessKill 9952
+2026-09-15 20:54:35 - Shutdown exception
+Message:クラスが登録されていません
+
+Stacktrace:   場所 System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   場所 System.Management.ManagementScope.InitializeGuts(Object o)
+   場所 System.Management.ManagementScope.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Get()
+   場所 winsw.WrapperService.GetChildPids(Int32 pid)
+   場所 winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   場所 winsw.WrapperService.StopIt()
+   場所 winsw.WrapperService.OnShutdown()
+2026-09-15 20:55:33 - Starting C:\Program Files\nodejs\node.exe  C:\Users\nakay\law-firm-attendance\node_modules\node-windows\lib\wrapper.js --file C:\Users\nakay\law-firm-attendance\server.cjs --scriptoptions= --log "Themis勤怠管理 wrapper" --grow 0.5 --wait 2 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2026-09-16 01:55:37 - Starting C:\Program Files\nodejs\node.exe  C:\Users\nakay\law-firm-attendance\node_modules\node-windows\lib\wrapper.js --file C:\Users\nakay\law-firm-attendance\server.cjs --scriptoptions= --log "Themis勤怠管理 wrapper" --grow 0.5 --wait 2 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2026-09-16 01:55:37 - Started 14880
+2026-09-16 14:15:21 - Stopping themis.exe
+2026-09-16 14:15:21 - ProcessKill 14880
+2026-09-16 14:15:22 - Shutdown exception
+Message:クラスが登録されていません
+
+Stacktrace:   場所 System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   場所 System.Management.ManagementScope.InitializeGuts(Object o)
+   場所 System.Management.ManagementScope.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Get()
+   場所 winsw.WrapperService.GetChildPids(Int32 pid)
+   場所 winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   場所 winsw.WrapperService.StopIt()
+   場所 winsw.WrapperService.OnShutdown()
+2026-09-16 14:16:27 - Starting C:\Program Files\nodejs\node.exe  C:\Users\nakay\law-firm-attendance\node_modules\node-windows\lib\wrapper.js --file C:\Users\nakay\law-firm-attendance\server.cjs --scriptoptions= --log "Themis勤怠管理 wrapper" --grow 0.5 --wait 2 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2026-09-16 14:16:27 - Started 5016
+2026-09-16 14:27:49 - Stopping themis.exe
+2026-09-16 14:27:49 - ProcessKill 5016
+2026-09-16 14:27:49 - Shutdown exception
+Message:クラスが登録されていません
+
+Stacktrace:   場所 System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   場所 System.Management.ManagementScope.InitializeGuts(Object o)
+   場所 System.Management.ManagementScope.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Get()
+   場所 winsw.WrapperService.GetChildPids(Int32 pid)
+   場所 winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   場所 winsw.WrapperService.StopIt()
+   場所 winsw.WrapperService.OnShutdown()
+2026-09-16 14:28:50 - Starting C:\Program Files\nodejs\node.exe  C:\Users\nakay\law-firm-attendance\node_modules\node-windows\lib\wrapper.js --file C:\Users\nakay\law-firm-attendance\server.cjs --scriptoptions= --log "Themis勤怠管理 wrapper" --grow 0.5 --wait 2 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2026-09-16 14:28:51 - Started 15352
+2026-09-16 16:39:28 - Stopping themis.exe
+2026-09-16 16:39:28 - ProcessKill 15352
+2026-09-16 16:39:29 - Shutdown exception
+Message:クラスが登録されていません
+
+Stacktrace:   場所 System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   場所 System.Management.ManagementScope.InitializeGuts(Object o)
+   場所 System.Management.ManagementScope.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Get()
+   場所 winsw.WrapperService.GetChildPids(Int32 pid)
+   場所 winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   場所 winsw.WrapperService.StopIt()
+   場所 winsw.WrapperService.OnShutdown()
+2026-09-16 16:40:24 - Starting C:\Program Files\nodejs\node.exe  C:\Users\nakay\law-firm-attendance\node_modules\node-windows\lib\wrapper.js --file C:\Users\nakay\law-firm-attendance\server.cjs --scriptoptions= --log "Themis勤怠管理 wrapper" --grow 0.5 --wait 2 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2026-09-16 16:40:25 - Started 12964
+2026-09-17 10:31:08 - Starting C:\Program Files\nodejs\node.exe  C:\Users\nakay\law-firm-attendance\node_modules\node-windows\lib\wrapper.js --file C:\Users\nakay\law-firm-attendance\server.cjs --scriptoptions= --log "Themis勤怠管理 wrapper" --grow 0.5 --wait 2 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2026-09-17 10:31:08 - Started 11696
+2026-09-18 00:18:34 - Stopping themis.exe
+2026-09-18 00:18:34 - ProcessKill 11696
+2026-09-18 00:18:34 - Shutdown exception
+Message:システム シャットダウンが実行中です。
+
+Stacktrace:   場所 System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   場所 System.Management.ManagementScope.InitializeGuts(Object o)
+   場所 System.Management.ManagementScope.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Get()
+   場所 winsw.WrapperService.GetChildPids(Int32 pid)
+   場所 winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   場所 winsw.WrapperService.StopIt()
+   場所 winsw.WrapperService.OnShutdown()
+2026-09-18 00:19:32 - Starting C:\Program Files\nodejs\node.exe  C:\Users\nakay\law-firm-attendance\node_modules\node-windows\lib\wrapper.js --file C:\Users\nakay\law-firm-attendance\server.cjs --scriptoptions= --log "Themis勤怠管理 wrapper" --grow 0.5 --wait 2 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2026-09-18 00:19:32 - Started 12508
+2026-09-18 04:01:08 - Stopping themis.exe
+2026-09-18 04:01:08 - ProcessKill 12508
+2026-09-18 04:01:08 - Shutdown exception
+Message:クラスが登録されていません
+
+Stacktrace:   場所 System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   場所 System.Management.ManagementScope.InitializeGuts(Object o)
+   場所 System.Management.ManagementScope.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Get()
+   場所 winsw.WrapperService.GetChildPids(Int32 pid)
+   場所 winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   場所 winsw.WrapperService.StopIt()
+   場所 winsw.WrapperService.OnShutdown()
+2026-09-18 04:02:02 - Starting C:\Program Files\nodejs\node.exe  C:\Users\nakay\law-firm-attendance\node_modules\node-windows\lib\wrapper.js --file C:\Users\nakay\law-firm-attendance\server.cjs --scriptoptions= --log "Themis勤怠管理 wrapper" --grow 0.5 --wait 2 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2026-09-18 04:02:02 - Started 12176
+2026-09-18 10:39:54 - Stopping themis.exe
+2026-09-18 10:39:54 - ProcessKill 12176
+2026-09-18 10:39:54 - Shutdown exception
+Message:クラスが登録されていません
+
+Stacktrace:   場所 System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   場所 System.Management.ManagementScope.InitializeGuts(Object o)
+   場所 System.Management.ManagementScope.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Get()
+   場所 winsw.WrapperService.GetChildPids(Int32 pid)
+   場所 winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   場所 winsw.WrapperService.StopIt()
+   場所 winsw.WrapperService.OnShutdown()
+2026-09-18 10:40:50 - Starting C:\Program Files\nodejs\node.exe  C:\Users\nakay\law-firm-attendance\node_modules\node-windows\lib\wrapper.js --file C:\Users\nakay\law-firm-attendance\server.cjs --scriptoptions= --log "Themis勤怠管理 wrapper" --grow 0.5 --wait 2 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2026-09-18 10:40:51 - Started 11940
+2026-09-18 14:35:55 - Starting C:\Program Files\nodejs\node.exe  C:\Users\nakay\law-firm-attendance\node_modules\node-windows\lib\wrapper.js --file C:\Users\nakay\law-firm-attendance\server.cjs --scriptoptions= --log "Themis勤怠管理 wrapper" --grow 0.5 --wait 2 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2026-09-18 14:35:55 - Started 9704
+2026-09-19 13:59:26 - Stopping themis.exe
+2026-09-19 13:59:26 - ProcessKill 9704
+2026-09-19 13:59:26 - Shutdown exception
+Message:クラスが登録されていません
+
+Stacktrace:   場所 System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   場所 System.Management.ManagementScope.InitializeGuts(Object o)
+   場所 System.Management.ManagementScope.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Get()
+   場所 winsw.WrapperService.GetChildPids(Int32 pid)
+   場所 winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   場所 winsw.WrapperService.StopIt()
+   場所 winsw.WrapperService.OnShutdown()
+2026-09-19 14:00:37 - Starting C:\Program Files\nodejs\node.exe  C:\Users\nakay\law-firm-attendance\node_modules\node-windows\lib\wrapper.js --file C:\Users\nakay\law-firm-attendance\server.cjs --scriptoptions= --log "Themis勤怠管理 wrapper" --grow 0.5 --wait 2 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2026-09-19 14:00:37 - Started 16360
+2026-09-20 12:23:50 - Stopping themis.exe
+2026-09-20 12:23:50 - ProcessKill 16360
+2026-09-20 12:23:50 - Shutdown exception
+Message:クラスが登録されていません
+
+Stacktrace:   場所 System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   場所 System.Management.ManagementScope.InitializeGuts(Object o)
+   場所 System.Management.ManagementScope.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Get()
+   場所 winsw.WrapperService.GetChildPids(Int32 pid)
+   場所 winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   場所 winsw.WrapperService.StopIt()
+   場所 winsw.WrapperService.OnShutdown()
+2026-09-20 12:24:54 - Starting C:\Program Files\nodejs\node.exe  C:\Users\nakay\law-firm-attendance\node_modules\node-windows\lib\wrapper.js --file C:\Users\nakay\law-firm-attendance\server.cjs --scriptoptions= --log "Themis勤怠管理 wrapper" --grow 0.5 --wait 2 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2026-09-20 12:24:54 - Started 16036
+2026-09-20 19:26:39 - Stopping themis.exe
+2026-09-20 19:26:39 - ProcessKill 16036
+2026-09-20 19:26:39 - Shutdown exception
+Message:クラスが登録されていません
+
+Stacktrace:   場所 System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   場所 System.Management.ManagementScope.InitializeGuts(Object o)
+   場所 System.Management.ManagementScope.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Get()
+   場所 winsw.WrapperService.GetChildPids(Int32 pid)
+   場所 winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   場所 winsw.WrapperService.StopIt()
+   場所 winsw.WrapperService.OnShutdown()
+2026-09-20 19:27:49 - Starting C:\Program Files\nodejs\node.exe  C:\Users\nakay\law-firm-attendance\node_modules\node-windows\lib\wrapper.js --file C:\Users\nakay\law-firm-attendance\server.cjs --scriptoptions= --log "Themis勤怠管理 wrapper" --grow 0.5 --wait 2 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2026-09-20 19:27:50 - Started 16156
+2026-09-21 11:24:18 - Stopping themis.exe
+2026-09-21 11:24:18 - ProcessKill 16156
+2026-09-21 11:24:19 - Shutdown exception
+Message:クラスが登録されていません
+
+Stacktrace:   場所 System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   場所 System.Management.ManagementScope.InitializeGuts(Object o)
+   場所 System.Management.ManagementScope.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Get()
+   場所 winsw.WrapperService.GetChildPids(Int32 pid)
+   場所 winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   場所 winsw.WrapperService.StopIt()
+   場所 winsw.WrapperService.OnShutdown()
+2026-09-21 11:25:16 - Starting C:\Program Files\nodejs\node.exe  C:\Users\nakay\law-firm-attendance\node_modules\node-windows\lib\wrapper.js --file C:\Users\nakay\law-firm-attendance\server.cjs --scriptoptions= --log "Themis勤怠管理 wrapper" --grow 0.5 --wait 2 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2026-09-21 11:25:16 - Started 15512
+2026-09-23 14:41:27 - Stopping themis.exe
+2026-09-23 14:41:27 - ProcessKill 15512
+2026-09-23 14:41:27 - Shutdown exception
+Message:クラスが登録されていません
+
+Stacktrace:   場所 System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   場所 System.Management.ManagementScope.InitializeGuts(Object o)
+   場所 System.Management.ManagementScope.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Get()
+   場所 winsw.WrapperService.GetChildPids(Int32 pid)
+   場所 winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   場所 winsw.WrapperService.StopIt()
+   場所 winsw.WrapperService.OnShutdown()
+2026-09-23 14:42:22 - Starting C:\Program Files\nodejs\node.exe  C:\Users\nakay\law-firm-attendance\node_modules\node-windows\lib\wrapper.js --file C:\Users\nakay\law-firm-attendance\server.cjs --scriptoptions= --log "Themis勤怠管理 wrapper" --grow 0.5 --wait 2 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2026-09-23 14:42:22 - Started 14548
+2026-09-23 15:58:46 - Stopping themis.exe
+2026-09-23 15:58:46 - ProcessKill 14548
+2026-09-23 15:58:47 - Shutdown exception
+Message:クラスが登録されていません
+
+Stacktrace:   場所 System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   場所 System.Management.ManagementScope.InitializeGuts(Object o)
+   場所 System.Management.ManagementScope.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Initialize()
+   場所 System.Management.ManagementObjectSearcher.Get()
+   場所 winsw.WrapperService.GetChildPids(Int32 pid)
+   場所 winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   場所 winsw.WrapperService.StopIt()
+   場所 winsw.WrapperService.OnShutdown()
+2026-09-23 15:59:51 - Starting C:\Program Files\nodejs\node.exe  C:\Users\nakay\law-firm-attendance\node_modules\node-windows\lib\wrapper.js --file C:\Users\nakay\law-firm-attendance\server.cjs --scriptoptions= --log "Themis勤怠管理 wrapper" --grow 0.5 --wait 2 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2026-09-23 15:59:51 - Started 16064
