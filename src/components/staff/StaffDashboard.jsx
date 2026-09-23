@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useApp } from '../../contexts/AppContext.jsx'
 import {
   getWorkMinutes, getEffectiveBreakMinutes, getAutoBreakMinutes,
-  formatDate, formatTime, formatMinutes,
+  formatDate, formatTime, formatMinutes, isOverdueClockIn,
 } from '../../utils/calculations.js'
 
 function BreakRequestForm({ record, onSubmit }) {
@@ -125,6 +125,12 @@ export default function StaffDashboard() {
         <section className="clock-section">
           <div className="current-time">{now.toLocaleTimeString('ja-JP')}</div>
           <div className="current-date">{now.toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' })}</div>
+
+          {activeRecord && isOverdueClockIn(activeRecord) && (
+            <div className="overdue-warning">
+              ⚠ {formatDate(activeRecord.clockIn)}から退勤の打刻がされていません。至急、管理者にご連絡ください。
+            </div>
+          )}
 
           <div className="clock-status">
             {activeRecord ? (

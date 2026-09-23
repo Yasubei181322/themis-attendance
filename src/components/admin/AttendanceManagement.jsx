@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useApp } from '../../contexts/AppContext.jsx'
-import { getWorkMinutes, getEffectiveBreakMinutes, formatDate, formatTime, formatMinutes } from '../../utils/calculations.js'
+import { getWorkMinutes, getEffectiveBreakMinutes, formatDate, formatTime, formatMinutes, isOverdueClockIn, isOverdueBreak } from '../../utils/calculations.js'
 
 export default function AttendanceManagement() {
   const { staffList, records, updateRecord, deleteRecord } = useApp()
@@ -43,8 +43,26 @@ export default function AttendanceManagement() {
 
   const years = [new Date().getFullYear(), new Date().getFullYear() - 1]
 
+  const overdueRecords = records.filter(r => isOverdueClockIn(r) || isOverdueBreak(r))
+
   return (
     <div className="admin-section">
+      {overdueRecords.length > 0 && (
+        <div className="overdue-alert">
+          <strong>⚠ 打刻漏れの可能性がある記録が{overdueRecords.length}件あります</strong>
+          <ul>
+            {overdueRecords.map(r => {
+              const staff = staffList.find(s => s.id === r.staffId)
+              return (
+                <li key={r.id}>
+                  {staff?.name || r.staffId}：{formatDate(r.clockIn)}
+                  {isOverdueClockIn(r) ? '　退勤の打刻がありません' : '　休憩終了の打刻がありません'}
+                </li>
+              )
+            })}
+          </ul>
+        </div>
+      )}
       <div className="section-header">
         <h2>勤怠記録管理</h2>
         <div className="filter-row">

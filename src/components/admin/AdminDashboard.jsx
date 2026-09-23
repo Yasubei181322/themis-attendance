@@ -4,7 +4,6 @@ import StaffManagement from './StaffManagement.jsx'
 import AttendanceManagement from './AttendanceManagement.jsx'
 import BreakRequestManagement from './BreakRequestManagement.jsx'
 import MonthlySummary from './MonthlySummary.jsx'
-import CSVExport from './CSVExport.jsx'
 import ExcelExport from './ExcelExport.jsx'
 
 const TABS = [
@@ -13,7 +12,6 @@ const TABS = [
   { id: 'breaks', label: '休憩申請' },
   { id: 'monthly', label: '月次集計' },
   { id: 'excel', label: 'Excel出力' },
-  { id: 'csv', label: 'CSV出力' },
 ]
 
 export default function AdminDashboard() {
@@ -56,7 +54,6 @@ export default function AdminDashboard() {
         {activeTab === 'breaks' && <BreakRequestManagement />}
         {activeTab === 'monthly' && <MonthlySummary />}
         {activeTab === 'excel' && <ExcelExport />}
-        {activeTab === 'csv' && <CSVExport />}
       </main>
     </div>
   )

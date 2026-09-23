@@ -42,6 +42,30 @@ input, select, button, textarea {
 }
 button { cursor: pointer; }
 
+/* ===== Overdue alerts ===== */
+.overdue-warning {
+  background: #fdecea;
+  color: #9a3412;
+  border: 1px solid #f5b5a3;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  font-weight: 600;
+  text-align: center;
+}
+.overdue-alert {
+  background: #fff8e6;
+  border: 1px solid #f0c14b;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  color: #6b4a00;
+}
+.overdue-alert ul {
+  margin: 8px 0 0;
+  padding-left: 20px;
+}
+
 /* ===== App Loading ===== */
 .app-loading {
   min-height: 100vh;

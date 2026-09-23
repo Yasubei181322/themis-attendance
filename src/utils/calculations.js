@@ -1,3 +1,16 @@
+// 前日以前から出勤中のまま（退勤押し忘れ）かどうか
+export function isOverdueClockIn(record) {
+  if (record.clockOut) return false
+  const d = new Date(record.clockIn)
+  const now = new Date()
+  return d.getFullYear() !== now.getFullYear() || d.getMonth() !== now.getMonth() || d.getDate() !== now.getDate()
+}
+
+// 休憩開始のまま終了打刻がない（休憩終了押し忘れ）かどうか
+export function isOverdueBreak(record) {
+  return !!(record.breakStart && !record.breakEnd && record.clockOut)
+}
+
 // Auto break deduction based on gross work minutes
 export function getAutoBreakMinutes(grossWorkMinutes) {
   if (grossWorkMinutes > 480) return 60
