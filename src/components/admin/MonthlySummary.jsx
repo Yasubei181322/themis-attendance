@@ -114,7 +114,7 @@ export default function MonthlySummary() {
                   <td>{staff.name}</td>
                   <td>
                     <span className={`emp-badge ${staff.employmentType}`}>
-                      {staff.employmentType === 'parttime' ? 'アルバイト' : '業務委託'}
+                      {staff.employmentType === 'parttime' ? 'パートタイムワーカー・アルバイト' : '業務委託'}
                     </span>
                   </td>
                   <td>{s.workDays}日</td>

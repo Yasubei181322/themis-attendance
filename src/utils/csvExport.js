@@ -62,7 +62,7 @@ export function exportMoneyForward(staffList, records, year, month) {
     const s = calcMonthlySummary(records, staff, year, month)
     if (s.workDays === 0) continue
     const ym = `${year}/${String(month).padStart(2, '0')}`
-    const kubun = staff.employmentType === 'contract' ? '業務委託' : 'アルバイト'
+    const kubun = staff.employmentType === 'contract' ? '業務委託' : 'パートタイムワーカー・アルバイト'
     rows.push([
       staff.id,
       staff.name,
@@ -90,7 +90,7 @@ export function exportPayslipData(staffList, records, year, month) {
     const s = calcMonthlySummary(records, staff, year, month)
     if (s.workDays === 0) continue
     const ym = `${year}/${String(month).padStart(2, '0')}`
-    const kubun = staff.employmentType === 'contract' ? '業務委託' : 'アルバイト'
+    const kubun = staff.employmentType === 'contract' ? '業務委託' : 'パートタイムワーカー・アルバイト'
     rows.push([
       staff.name,
       ym,

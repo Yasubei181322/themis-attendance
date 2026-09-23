@@ -322,7 +322,7 @@ app.get('/api/export/monthly', async (req, res) => {
     const row = idx + 4
     const bg  = idx % 2 === 0 ? 'FFFFFFFF' : gray
     setCell(ws1, row, 1, s.staff.name,       { fill: bg, font: { bold: true, size: 10 }, align: L })
-    setCell(ws1, row, 2, s.staff.employment_type === 'contract' ? '業務委託' : 'アルバイト', { fill: bg, font: { size: 9 }, align: C })
+    setCell(ws1, row, 2, s.staff.employment_type === 'contract' ? '業務委託' : 'パートタイムワーカー・アルバイト', { fill: bg, font: { size: 9 }, align: C })
     setCell(ws1, row, 3, s.workDays,          { fill: bg, align: C })
     setCell(ws1, row, 4, toHHMM(s.workMins),  { fill: bg, align: C })
     setCell(ws1, row, 5, toHHMM(s.lateNightMins) || '—', { fill: bg, align: C })
@@ -363,7 +363,7 @@ app.get('/api/export/monthly', async (req, res) => {
     // スタッフ情報
     ws.mergeCells(2, 1, 2, 9)
     setCell(ws, 2, 1,
-      `区分：${s.staff.employment_type === 'contract' ? '業務委託' : 'アルバイト'}　時給：${s.staff.hourly_rate.toLocaleString()}円`,
+      `区分：${s.staff.employment_type === 'contract' ? '業務委託' : 'パートタイムワーカー・アルバイト'}　時給：${s.staff.hourly_rate.toLocaleString()}円`,
       { fill: blue, font: { size: 10 }, align: L }
     )
     ws.getRow(2).height = 16

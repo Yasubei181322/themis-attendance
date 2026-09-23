@@ -63,7 +63,7 @@ export default function StaffManagement() {
             <div className="form-group">
               <label>契約形態</label>
               <select value={newStaff.employmentType} onChange={e => setNewStaff(p => ({...p, employmentType: e.target.value}))}>
-                <option value="parttime">アルバイト</option>
+                <option value="parttime">パートタイムワーカー・アルバイト</option>
                 <option value="contract">業務委託</option>
               </select>
             </div>
@@ -99,7 +99,7 @@ export default function StaffManagement() {
                   <td><input type="number" min="1000" max="3000" value={editData.hourlyRate} onChange={e => setEditData(p=>({...p,hourlyRate:e.target.value}))} className="inline-input" style={{width:80}} /></td>
                   <td>
                     <select value={editData.employmentType} onChange={e => setEditData(p=>({...p,employmentType:e.target.value}))}>
-                      <option value="parttime">アルバイト</option>
+                      <option value="parttime">パートタイムワーカー・アルバイト</option>
                       <option value="contract">業務委託</option>
                     </select>
                   </td>
@@ -114,7 +114,7 @@ export default function StaffManagement() {
                   <td>{staff.name}</td>
                   <td className="pin-cell">{'●'.repeat(4)}</td>
                   <td><strong>{staff.hourlyRate.toLocaleString()}円</strong></td>
-                  <td><span className={`emp-badge ${staff.employmentType}`}>{staff.employmentType === 'parttime' ? 'アルバイト' : '業務委託'}</span></td>
+                  <td><span className={`emp-badge ${staff.employmentType}`}>{staff.employmentType === 'parttime' ? 'パートタイムワーカー・アルバイト' : '業務委託'}</span></td>
                   <td>
                     {staff.active === false
                       ? <span className="status-badge retired">退職済</span>
