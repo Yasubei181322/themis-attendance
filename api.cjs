@@ -527,8 +527,19 @@ app.get('/api/export/monthly', async (req, res) => {
 
 // ============ 静的ファイル配信 ============
 const distPath = path.join(__dirname, 'dist')
-app.use(express.static(distPath))
+app.use(express.static(distPath, {
+  index: false,
+  setHeaders: (res, filePath) => {
+    // Viteが生成するファイル名にはハッシュが含まれるため長期キャッシュ可能
+    if (/\.[a-f0-9]{8,}\.(js|css)$/.test(filePath)) {
+      res.setHeader('Cache-Control', 'public, max-age=31536000, immutable')
+    } else {
+      res.setHeader('Cache-Control', 'no-cache')
+    }
+  },
+}))
 app.get(/.*/, (req, res) => {
+  res.setHeader('Cache-Control', 'no-cache')
   res.sendFile(path.join(distPath, 'index.html'))
 })
 

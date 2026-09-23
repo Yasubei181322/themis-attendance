@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useApp } from '../../contexts/AppContext.jsx'
 
 export default function StaffManagement() {
-  const { staffList, updateStaff, addStaff, deleteStaff, retireStaff, reactivateStaff } = useApp()
+  const { staffList, updateStaff, addStaff, retireStaff, reactivateStaff } = useApp()
   const [editingId, setEditingId] = useState(null)
   const [editData, setEditData] = useState({})
   const [showAdd, setShowAdd] = useState(false)
@@ -127,7 +127,6 @@ export default function StaffManagement() {
                     ) : (
                       <button className="btn btn-sm btn-warning" onClick={() => retireStaff(staff.id)} style={{marginLeft:6}}>退職</button>
                     )}
-                    <button className="btn btn-sm btn-danger" onClick={() => deleteStaff(staff.id)} style={{marginLeft:6}}>削除</button>
                   </td>
                 </>
               )}
