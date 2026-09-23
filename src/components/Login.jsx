@@ -19,10 +19,10 @@ export default function Login() {
     }
   }
 
-  function handleAdminLogin(e) {
+  async function handleAdminLogin(e) {
     e.preventDefault()
     setError('')
-    if (!loginAdmin(adminPw)) {
+    if (!(await loginAdmin(adminPw))) {
       setError('パスワードが正しくありません')
     }
   }

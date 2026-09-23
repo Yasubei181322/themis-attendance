@@ -100,6 +100,16 @@ function generateId() {
   return Math.random().toString(36).slice(2) + Date.now().toString(36)
 }
 
+// ============ API: 管理者認証 ============
+app.post('/api/login-admin', (req, res) => {
+  const { password } = req.body
+  if (password && password === process.env.ADMIN_PASSWORD) {
+    res.json({ ok: true })
+  } else {
+    res.status(401).json({ ok: false })
+  }
+})
+
 // ============ API: スタッフ ============
 app.get('/api/staff', async (req, res) => {
   const { rows } = await pool.query('SELECT * FROM staff ORDER BY id')

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
-import { INITIAL_STAFF } from '../data/initialData.js'
+import { INITIAL_STAFF, ADMIN_PASSWORD } from '../data/initialData.js'
 import { generateId } from '../utils/calculations.js'
 
 const AppContext = createContext(null)
@@ -49,8 +49,16 @@ export function AppProvider({ children }) {
     setCurrentUser({ type: 'staff', id: staffId })
     return true
   }
-  function loginAdmin(password) {
-    if (password !== 'admin1234') return false
+  async function loginAdmin(password) {
+    if (USE_API) {
+      try {
+        await api('/login-admin', 'POST', { password })
+      } catch {
+        return false
+      }
+    } else {
+      if (password !== ADMIN_PASSWORD) return false
+    }
     setCurrentUser({ type: 'admin' })
     return true
   }
