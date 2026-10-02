@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react'
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react'
 import { INITIAL_STAFF, ADMIN_PASSWORD } from '../data/initialData.js'
 import { generateId } from '../utils/calculations.js'
 
@@ -29,6 +29,62 @@ export function AppProvider({ children }) {
   const [records, setRecords]     = useState(() => USE_API ? [] : loadLS(LS_RECORDS, []))
   const [currentUser, setCurrentUser] = useState(null)
   const [loading, setLoading] = useState(USE_API)
+  const [saving, setSaving] = useState(false)
+
+  // 画面を先に更新し、サーバー保存は記録ごとに順番通り裏で行う
+  const recordsRef = useRef(records)
+  recordsRef.current = records
+  const queueRef = useRef({})
+  const createRef = useRef({})
+  const aliasRef = useRef({})
+  const pendingRef = useRef(0)
+
+  function trackSave(promise) {
+    pendingRef.current += 1
+    setSaving(true)
+    return promise.finally(() => {
+      pendingRef.current -= 1
+      if (pendingRef.current === 0) setSaving(false)
+    })
+  }
+
+  async function resyncRecords() {
+    try {
+      const recs = await api('/records')
+      recordsRef.current = recs
+      setRecords(recs)
+    } catch { /* 次回の読み込みで同期される */ }
+  }
+
+  function setRecordsNow(next) {
+    recordsRef.current = next
+    setRecords(next)
+  }
+
+  function syncRecord(recordId, body) {
+    const key = aliasRef.current[recordId] || recordId
+    const run = async () => {
+      if (createRef.current[recordId]) {
+        await createRef.current[recordId]
+      }
+      const id = aliasRef.current[recordId] || recordId
+      await api(`/records/${id}`, 'PUT', body)
+    }
+    const next = (queueRef.current[key] || Promise.resolve()).then(run)
+    queueRef.current[key] = next.catch(() => {})
+    trackSave(next).catch(() => {
+      alert('通信に失敗しました。画面を更新して記録を確認してください。')
+      resyncRecords()
+    })
+  }
+
+  useEffect(() => {
+    function warn(e) {
+      if (pendingRef.current > 0) { e.preventDefault(); e.returnValue = '' }
+    }
+    window.addEventListener('beforeunload', warn)
+    return () => window.removeEventListener('beforeunload', warn)
+  }, [])
 
   // API: 初回データ取得
   useEffect(() => {
@@ -65,134 +121,134 @@ export function AppProvider({ children }) {
   function logout() { setCurrentUser(null) }
 
   // ===== 打刻 =====
-  async function clockIn(staffId) {
-    const existing = records.find(r => r.staffId === staffId && !r.clockOut)
+  function clockIn(staffId) {
+    const existing = recordsRef.current.find(r => r.staffId === staffId && !r.clockOut)
     if (existing) return false
+    const now = new Date().toISOString()
+    const tempId = generateId()
+    setRecordsNow([...recordsRef.current, {
+      id: tempId, staffId, clockIn: now, clockOut: null,
+      transportationFee: 0, transportationRoundTrip: 0, note: '',
+      breakRequest: null, breakStart: null, breakEnd: null,
+    }])
     if (USE_API) {
-      const rec = await api('/records', 'POST', { staffId, clockIn: new Date().toISOString() })
-      setRecords(prev => [...prev, rec])
-    } else {
-      setRecords(prev => [...prev, {
-        id: generateId(), staffId, clockIn: new Date().toISOString(), clockOut: null,
-        transportationFee: 0, transportationRoundTrip: 0, note: '', breakRequest: null,
-      }])
+      const p = api('/records', 'POST', { staffId, clockIn: now }).then(rec => {
+        aliasRef.current[tempId] = rec.id
+        queueRef.current[rec.id] = queueRef.current[tempId]
+        setRecordsNow(recordsRef.current.map(r => r.id === tempId ? { ...r, id: rec.id } : r))
+      })
+      createRef.current[tempId] = p
+      trackSave(p).catch(() => {
+        alert('出勤の記録に失敗しました。もう一度お試しください。')
+        setRecordsNow(recordsRef.current.filter(r => r.id !== tempId))
+      })
     }
     return true
   }
 
-  async function clockOut(staffId) {
-    const record = records.find(r => r.staffId === staffId && !r.clockOut)
+  function patchRecord(recordId, updates) {
+    const id = aliasRef.current[recordId] || recordId
+    const current = recordsRef.current.find(r => r.id === id)
+    if (!current) return false
+    const merged = { ...current, ...updates }
+    setRecordsNow(recordsRef.current.map(r => r.id === id ? merged : r))
+    if (USE_API) syncRecord(id, merged)
+    return true
+  }
+
+  function clockOut(staffId) {
+    const record = recordsRef.current.find(r => r.staffId === staffId && !r.clockOut)
     if (!record) return false
-    if (USE_API) {
-      const updated = await api(`/records/${record.id}`, 'PUT', { clockOut: new Date().toISOString() })
-      setRecords(prev => prev.map(r => r.id === record.id ? updated : r))
-    } else {
-      setRecords(prev => prev.map(r => r.id === record.id ? { ...r, clockOut: new Date().toISOString() } : r))
-    }
-    return true
+    return patchRecord(record.id, { clockOut: new Date().toISOString() })
   }
 
-  async function updateRecord(recordId, updates) {
-    if (USE_API) {
-      const record = records.find(r => r.id === recordId)
-      const updated = await api(`/records/${recordId}`, 'PUT', { ...record, ...updates })
-      setRecords(prev => prev.map(r => r.id === recordId ? updated : r))
-    } else {
-      setRecords(prev => prev.map(r => r.id === recordId ? { ...r, ...updates } : r))
-    }
+  function updateRecord(recordId, updates) {
+    patchRecord(recordId, updates)
   }
 
-  async function deleteRecord(recordId) {
-    if (USE_API) await api(`/records/${recordId}`, 'DELETE')
-    setRecords(prev => prev.filter(r => r.id !== recordId))
-  }
-
-  async function submitBreakRequest(recordId, requestedBreakMinutes, reason) {
-    const br = { requestedBreakMinutes, reason, status: 'pending', adminComment: null, requestedAt: new Date().toISOString() }
+  function deleteRecord(recordId) {
+    const id = aliasRef.current[recordId] || recordId
+    setRecordsNow(recordsRef.current.filter(r => r.id !== id))
     if (USE_API) {
-      const record = records.find(r => r.id === recordId)
-      const updated = await api(`/records/${recordId}`, 'PUT', { ...record, breakRequest: br })
-      setRecords(prev => prev.map(r => r.id === recordId ? updated : r))
-    } else {
-      setRecords(prev => prev.map(r => r.id === recordId ? { ...r, breakRequest: br } : r))
+      trackSave(api(`/records/${id}`, 'DELETE')).catch(() => {
+        alert('削除に失敗しました。画面を更新して確認してください。')
+        resyncRecords()
+      })
     }
   }
 
-  async function approveBreakRequest(recordId) {
+  function submitBreakRequest(recordId, requestedBreakMinutes, reason) {
+    patchRecord(recordId, {
+      breakRequest: { requestedBreakMinutes, reason, status: 'pending', adminComment: null, requestedAt: new Date().toISOString() },
+    })
+  }
+
+  function approveBreakRequest(recordId) {
+    const record = recordsRef.current.find(r => r.id === recordId)
+    if (!record) return
+    patchRecord(recordId, { breakRequest: { ...record.breakRequest, status: 'approved', adminComment: null } })
+  }
+
+  function rejectBreakRequest(recordId, comment) {
+    const record = recordsRef.current.find(r => r.id === recordId)
+    if (!record) return
+    patchRecord(recordId, { breakRequest: { ...record.breakRequest, status: 'rejected', adminComment: comment } })
+  }
+
+  async function resyncStaff() {
+    try { setStaffList(await api('/staff')) } catch { /* 次回の読み込みで同期される */ }
+  }
+
+  function updateStaff(staffId, updates) {
+    const staff = staffList.find(s => s.id === staffId)
+    if (!staff) return
+    const merged = { ...staff, ...updates }
+    setStaffList(prev => prev.map(s => s.id === staffId ? merged : s))
     if (USE_API) {
-      const record = records.find(r => r.id === recordId)
-      const updated = await api(`/records/${recordId}`, 'PUT', { ...record, breakRequest: { ...record.breakRequest, status: 'approved', adminComment: null } })
-      setRecords(prev => prev.map(r => r.id === recordId ? updated : r))
-    } else {
-      setRecords(prev => prev.map(r => r.id === recordId ? { ...r, breakRequest: { ...r.breakRequest, status: 'approved', adminComment: null } } : r))
+      trackSave(api(`/staff/${staffId}`, 'PUT', merged)).catch(() => {
+        alert('保存に失敗しました。画面を更新して確認してください。')
+        resyncStaff()
+      })
     }
   }
 
-  async function rejectBreakRequest(recordId, comment) {
-    if (USE_API) {
-      const record = records.find(r => r.id === recordId)
-      const updated = await api(`/records/${recordId}`, 'PUT', { ...record, breakRequest: { ...record.breakRequest, status: 'rejected', adminComment: comment } })
-      setRecords(prev => prev.map(r => r.id === recordId ? updated : r))
-    } else {
-      setRecords(prev => prev.map(r => r.id === recordId ? { ...r, breakRequest: { ...r.breakRequest, status: 'rejected', adminComment: comment } } : r))
-    }
-  }
-
-  async function updateStaff(staffId, updates) {
-    if (USE_API) {
-      const staff = staffList.find(s => s.id === staffId)
-      const updated = await api(`/staff/${staffId}`, 'PUT', { ...staff, ...updates })
-      setStaffList(prev => prev.map(s => s.id === staffId ? updated : s))
-    } else {
-      setStaffList(prev => prev.map(s => s.id === staffId ? { ...s, ...updates } : s))
-    }
-  }
-
-  async function addStaff(staffData) {
+  function addStaff(staffData) {
     // 既存IDの最大番号+1でID生成（削除後も重複しない）
     const maxNum = staffList.reduce((max, s) => {
       const n = parseInt(s.id.replace(/\D/g, '')) || 0
       return n > max ? n : max
     }, 0)
     const newStaff = { id: 'staff' + String(maxNum + 1).padStart(3, '0'), active: true, ...staffData }
+    setStaffList(prev => [...prev, newStaff])
     if (USE_API) {
-      const created = await api('/staff', 'POST', newStaff)
-      setStaffList(prev => [...prev, created])
-    } else {
-      setStaffList(prev => [...prev, newStaff])
+      trackSave(api('/staff', 'POST', newStaff)).catch(() => {
+        alert('スタッフの登録に失敗しました。もう一度お試しください。')
+        setStaffList(prev => prev.filter(s => s.id !== newStaff.id))
+      })
     }
   }
 
-  async function startBreak(staffId) {
-    const record = records.find(r => r.staffId === staffId && !r.clockOut)
-    if (!record) return false
-    const now = new Date().toISOString()
-    if (USE_API) {
-      const updated = await api(`/records/${record.id}`, 'PUT', { breakStart: now })
-      setRecords(prev => prev.map(r => r.id === record.id ? updated : r))
-    } else {
-      setRecords(prev => prev.map(r => r.id === record.id ? { ...r, breakStart: now } : r))
-    }
-    return true
+  function startBreak(staffId) {
+    const record = recordsRef.current.find(r => r.staffId === staffId && !r.clockOut)
+    if (!record || record.breakStart) return false
+    return patchRecord(record.id, { breakStart: new Date().toISOString() })
   }
 
-  async function endBreak(staffId) {
-    const record = records.find(r => r.staffId === staffId && !r.clockOut)
-    if (!record || !record.breakStart) return false
-    const now = new Date().toISOString()
-    if (USE_API) {
-      const updated = await api(`/records/${record.id}`, 'PUT', { breakEnd: now })
-      setRecords(prev => prev.map(r => r.id === record.id ? updated : r))
-    } else {
-      setRecords(prev => prev.map(r => r.id === record.id ? { ...r, breakEnd: now } : r))
-    }
-    return true
+  function endBreak(staffId) {
+    const record = recordsRef.current.find(r => r.staffId === staffId && !r.clockOut)
+    if (!record || !record.breakStart || record.breakEnd) return false
+    return patchRecord(record.id, { breakEnd: new Date().toISOString() })
   }
 
   async function deleteStaff(staffId) {
     if (!window.confirm('このスタッフを完全に削除しますか？\n月次集計からも表示されなくなります。\n（退職者として記録を残したい場合は「退職」を使ってください）')) return
-    if (USE_API) await api(`/staff/${staffId}`, 'DELETE')
     setStaffList(prev => prev.filter(s => s.id !== staffId))
+    if (USE_API) {
+      trackSave(api(`/staff/${staffId}`, 'DELETE')).catch(() => {
+        alert('削除に失敗しました。画面を更新して確認してください。')
+        resyncStaff()
+      })
+    }
   }
 
   async function retireStaff(staffId) {
@@ -228,6 +284,7 @@ export function AppProvider({ children }) {
       getStaff, getStaffRecords, getActiveRecord,
     }}>
       {children}
+      {saving && <div className="saving-badge">保存中…（このまま少しお待ちください）</div>}
     </AppContext.Provider>
   )
 }

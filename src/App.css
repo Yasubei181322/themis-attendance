@@ -42,6 +42,20 @@ input, select, button, textarea {
 }
 button { cursor: pointer; }
 
+/* ===== Saving badge ===== */
+.saving-badge {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 1000;
+  background: #1a2744;
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
 /* ===== Overdue alerts ===== */
 .overdue-warning {
   background: #fdecea;
