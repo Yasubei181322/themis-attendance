@@ -124,7 +124,19 @@ export function AppProvider({ children }) {
   function clockIn(staffId) {
     const existing = recordsRef.current.find(r => r.staffId === staffId && !r.clockOut)
     if (existing) return false
-    const now = new Date().toISOString()
+    createRecord(staffId, new Date().toISOString())
+    return true
+  }
+
+  // 管理者による手入力（後から記録を追加）
+  function addRecord(staffId, fields) {
+    const tempId = createRecord(staffId, fields.clockIn)
+    const { clockIn: _ignored, ...rest } = fields
+    patchRecord(tempId, rest)
+  }
+
+  function createRecord(staffId, clockInIso) {
+    const now = clockInIso
     const tempId = generateId()
     setRecordsNow([...recordsRef.current, {
       id: tempId, staffId, clockIn: now, clockOut: null,
@@ -143,7 +155,7 @@ export function AppProvider({ children }) {
         setRecordsNow(recordsRef.current.filter(r => r.id !== tempId))
       })
     }
-    return true
+    return tempId
   }
 
   function patchRecord(recordId, updates) {
@@ -278,7 +290,7 @@ export function AppProvider({ children }) {
     <AppContext.Provider value={{
       staffList, records, currentUser,
       loginStaff, loginAdmin, logout,
-      clockIn, clockOut, updateRecord, deleteRecord,
+      clockIn, clockOut, addRecord, updateRecord, deleteRecord,
       submitBreakRequest, approveBreakRequest, rejectBreakRequest,
       updateStaff, addStaff, deleteStaff, retireStaff, reactivateStaff, startBreak, endBreak,
       getStaff, getStaffRecords, getActiveRecord,

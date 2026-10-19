@@ -175,8 +175,8 @@ app.put('/api/records/:id', async (req, res) => {
       break_req_status = $8,
       break_req_comment = $9,
       break_req_at = $10,
-      break_start = COALESCE($12, break_start),
-      break_end = COALESCE($13, break_end)
+      break_start = $12,
+      break_end = $13
     WHERE id = $11
   `, [
     clockIn || null,

@@ -1,3 +1,16 @@
+// ISO文字列 → datetime-local入力用の日本時間（端末の時刻）文字列
+export function toLocalInput(iso) {
+  if (!iso) return ''
+  const d = new Date(iso)
+  const p = n => String(n).padStart(2, '0')
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`
+}
+
+// datetime-local入力値 → ISO文字列（空ならnull）
+export function fromLocalInput(str) {
+  return str ? new Date(str).toISOString() : null
+}
+
 // 前日以前から出勤中のまま（退勤押し忘れ）かどうか
 export function isOverdueClockIn(record) {
   if (record.clockOut) return false
